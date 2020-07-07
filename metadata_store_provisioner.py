@@ -12,7 +12,7 @@ args = get_parameters()
 logger = setup_logging(
     os.environ["LOG_LEVEL"] if "LOG_LEVEL" in os.environ else "INFO",
     args.environment,
-    args.application
+    args.application,
 )
 
 
@@ -25,7 +25,7 @@ def handler(event, context):
 
     """
     payload_config = get_wrapped_message(event)
-    table_name = payload_config['table-name']
+    table_name = payload_config["table-name"]
 
     check_or_create_schema(mysqlclient, table_name)
 
@@ -41,10 +41,14 @@ def get_wrapped_message(event):
     """
     sns_message = event["Records"][0]["Sns"]
     dumped_message = get_escaped_json_string(sns_message)
-    logger.debug(f'Getting wrapped message", "sns_message": {dumped_message}, "mode": "wrapping')
+    logger.debug(
+        f'Getting wrapped message", "sns_message": {dumped_message}, "mode": "wrapping'
+    )
     payload_message = json.loads(sns_message["Message"])
     dumped_payload = get_escaped_json_string(payload_message)
-    logger.info(f'Received sns", "payload_message": {dumped_payload}, "mode": "wrapping')
+    logger.info(
+        f'Received sns", "payload_message": {dumped_payload}, "mode": "wrapping'
+    )
 
     missing_keys = []
     for required_message_key in required_message_keys:
@@ -164,7 +168,7 @@ def create_database_schema(mysql_connector, database_name, table_name):
     """
     schema_creation_query = [
         f"CREATE DATABASE {args.rds_database} CHARACTER SET 'utf8';",
-        f"USE {args.rds_database};"
+        f"USE {args.rds_database};",
     ]
 
     schema_creation_query.append(get_schema_from_file(f"{table_name}.sql"))
@@ -184,4 +188,3 @@ def get_schema_from_file(filename):
         queries_list = sql_file.read()
         print(queries_list)
         return queries_list
-
