@@ -12,10 +12,10 @@ def handler(event, context):
     args = get_parameters(event, ["table-name"])
 
     # create table (if not exist)
-    execute_file('create_table.sql', Table[args['table-name']])
+    execute_file("create_table.sql", Table[args["table-name"]])
 
     # grant access to table
-    execute_file('grant_user.sql', Table[args['table-name']])
+    execute_file("grant_user.sql", Table[args["table-name"]])
 
     # validate table exists and structure is correct
     # validate users exist
