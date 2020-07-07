@@ -4,8 +4,14 @@ import os
 import mysql.connector
 import mysql.connector.pooling
 import logging
+from enum import Enum
 
 logger = logging.getLogger(__name__)
+
+
+class Table(Enum):
+    UCFS = "ucfs"
+    EQUALITIES = "equalities"
 
 
 def get_mysql_password():

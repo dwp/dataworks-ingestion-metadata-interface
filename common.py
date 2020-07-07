@@ -1,9 +1,9 @@
 import logging
 import socket
-import argparse
 import boto3
 import os
 import sys
+from database import Table
 
 
 def setup_logging(logger_level, environment, application):
@@ -36,47 +36,53 @@ def setup_logging(logger_level, environment, application):
     return the_logger
 
 
-def get_parameters():
-    """Define and parse command line args."""
-    parser = argparse.ArgumentParser(
-        description="Provision table structure and create required users for metadata store."
-    )
+def get_parameters(event, required_keys):
+    logger = logging.getLogger(__name__)
+    logger.info(f"Event: {event}")
 
-    # Parse command line inputs and set defaults
-    parser.add_argument("--aws-profile", default="default")
-    parser.add_argument("--aws-region", default="eu-west-2")
-    parser.add_argument("--environment", default="NOT_SET", help="Environment value")
-    parser.add_argument("--application", default="NOT_SET", help="Application")
-    parser.add_argument("--rds-endpoint")
-    parser.add_argument("--rds-username")
-    parser.add_argument("--rds-database")
-    parser.add_argument("--rds-password-secret-name")
+    _args = event
 
-    _args = parser.parse_args()
-
-    # Override arguments with environment variables where set
+    # Add environment variables to arguments where set
     if "AWS_PROFILE" in os.environ:
-        _args.aws_profile = os.environ["AWS_PROFILE"]
+        _args["aws_profile"] = os.environ["AWS_PROFILE"]
 
     if "AWS_REGION" in os.environ:
-        _args.aws_region = os.environ["AWS_REGION"]
+        _args["aws_region"] = os.environ["AWS_REGION"]
 
     if "ENVIRONMENT" in os.environ:
-        _args.environment = os.environ["ENVIRONMENT"]
+        _args["environment"] = os.environ["ENVIRONMENT"]
 
     if "APPLICATION" in os.environ:
-        _args.application = os.environ["APPLICATION"]
+        _args["application"] = os.environ["APPLICATION"]
 
-    if "RDS_HOSTNAME" in os.environ:
-        _args.rds_hostname = os.environ["RDS_ENDPOINT"]
+    if "RDS_ENDPOINT" in os.environ:
+        _args["rds_endpoint"] = os.environ["RDS_ENDPOINT"]
 
     if "RDS_USERNAME" in os.environ:
-        _args.rds_username = os.environ["RDS_USERNAME"]
+        _args["rds_username"] = os.environ["RDS_USERNAME"]
 
     if "RDS_DATABASE" in os.environ:
-        _args.rds_database = os.environ["RDS_DATABASE"]
+        _args["rds_database"] = os.environ["RDS_DATABASE"]
 
     if "RDS_PASSWORD_SECRET_NAME" in os.environ:
-        _args.metadatastore_secret_id = os.environ["RDS_PASSWORD_SECRET_NAME"]
+        _args["rds_password_secret_name"] = os.environ["RDS_PASSWORD_SECRET_NAME"]
+
+    # Validate event and environment variables
+    missing_event_keys = []
+    for required_message_key in required_keys:
+        if required_message_key not in _args:
+            missing_event_keys.append(required_message_key)
+    if missing_event_keys:
+        raise KeyError(
+            "KeyError: The following required keys are missing from the event or env vars: {}".format(
+                ", ".join(missing_event_keys)
+            )
+        )
+
+    # Validate table name
+    if "table-name" in _args and _args["table-name"].upper() not in Table.__members__:
+        raise ValueError(
+            f"ValueError: table-name {_args['table-name']} is invalid or not supported"
+        )
 
     return _args
