@@ -47,13 +47,10 @@ def get_parameters():
     parser.add_argument("--aws-region", default="eu-west-2")
     parser.add_argument("--environment", default="NOT_SET", help="Environment value")
     parser.add_argument("--application", default="NOT_SET", help="Application")
-    parser.add_argument("--rds-hostname")
-    parser.add_argument("--rds-port")
+    parser.add_argument("--rds-endpoint")
     parser.add_argument("--rds-username")
     parser.add_argument("--rds-database")
-    parser.add_argument("--rds-database-table")  # Has to come from payload job
-    parser.add_argument("--metadatastore-secret-id")
-    parser.add_argument("--rds-password")
+    parser.add_argument("--rds-password-secret-name")
 
     _args = parser.parse_args()
 
@@ -71,10 +68,7 @@ def get_parameters():
         _args.application = os.environ["APPLICATION"]
 
     if "RDS_HOSTNAME" in os.environ:
-        _args.rds_hostname = os.environ["RDS_HOSTNAME"]
-
-    if "RDS_PORT" in os.environ:
-        _args.rds_port = int(os.environ["RDS_PORT"])
+        _args.rds_hostname = os.environ["RDS_ENDPOINT"]
 
     if "RDS_USERNAME" in os.environ:
         _args.rds_username = os.environ["RDS_USERNAME"]
@@ -82,13 +76,7 @@ def get_parameters():
     if "RDS_DATABASE" in os.environ:
         _args.rds_database = os.environ["RDS_DATABASE"]
 
-    if "RDS_DATABASE_TABLE" in os.environ:
-        _args.rds_database_table = os.environ["RDS_DATABASE_TABLE"]
-
-    if "METASTORE_SECRET_ID" in os.environ:
-        _args.metadatastore_secret_id = os.environ["METADATASTORE_SECRET_ID"]
-
     if "RDS_PASSWORD_SECRET_NAME" in os.environ:
-        _args.rds_password_secret_name = os.environ["RDS_PASSWORD_SECRET_NAME"]
+        _args.metadatastore_secret_id = os.environ["RDS_PASSWORD_SECRET_NAME"]
 
     return _args
