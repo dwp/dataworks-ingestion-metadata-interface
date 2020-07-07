@@ -24,60 +24,13 @@ def handler(event, context):
         context (dict): Context from AWS
 
     """
-    payload_config = get_wrapped_message(event)
-    table_name = payload_config["table-name"]
+    check_or_create_tables(args.rds_table_name)
 
-    check_or_create_tables(table_name)
-
-    check_users_exist(mysqlclient)
-
-
-def get_wrapped_message(event):
-    """Check the mandatory keys and wrap them.
-
-    Arguments:
-        event (dict): Event from AWS
-
-    """
-    sns_message = event["Records"][0]["Sns"]
-    dumped_message = get_escaped_json_string(sns_message)
-    logger.debug(
-        f'Getting wrapped message", "sns_message": {dumped_message}, "mode": "wrapping'
-    )
-    payload_message = json.loads(sns_message["Message"])
-    dumped_payload = get_escaped_json_string(payload_message)
-    logger.info(
-        f'Received sns", "payload_message": {dumped_payload}, "mode": "wrapping'
-    )
-
-    missing_keys = []
-    for required_message_key in required_message_keys:
-        if required_message_key not in payload_message:
-            missing_keys.append(required_message_key)
-
-    if missing_keys:
-        bad_keys = ", ".join(missing_keys)
-        error_message = f"Required keys are missing from payload: {bad_keys}"
-        raise KeyError(error_message)
-
-    table_name = payload_message["table-name"]
-
-    return {"table-name": table_name}
-
-
-def get_escaped_json_string(json_dict):
-    """Dump out the given json string with escaped quotes.
-
-    Arguments:
-        json_dict (Dict): Parsed json as a dictionary
-
-    """
-    try:
-        escaped_string = json.dumps(json.dumps(json_dict))
-    except Exception:
-        escaped_string = json.dumps(json_dict)
-
-    return escaped_string
+"""
+TODO
+Validate the tables schema for any issues and raise exception if found
+Create users and grant permissions
+"""
 
 
 def check_or_create_tables(table_name):

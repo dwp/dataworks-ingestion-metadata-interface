@@ -3,6 +3,7 @@ import socket
 import boto3
 import os
 import sys
+import base64
 from database import Table
 
 
@@ -66,6 +67,10 @@ def get_parameters(event, required_keys):
 
     if "RDS_PASSWORD_SECRET_NAME" in os.environ:
         _args["rds_password_secret_name"] = os.environ["RDS_PASSWORD_SECRET_NAME"]
+
+    # Sets table name as an argument from event payload
+    if "table-name" in event:
+        _args["rds_table_name"] = event["table-name"]
 
     # Validate event and environment variables
     missing_event_keys = []
