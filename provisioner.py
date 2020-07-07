@@ -5,7 +5,7 @@ from database import *
 
 
 required_message_keys = [
-   "table-name",
+    "table-name",
 ]
 
 args = get_parameters()
@@ -104,7 +104,7 @@ def create_database_table(table_name):
         f"CREATE DATABASE {args.rds_database} CHARACTER SET 'utf8';",
         f"USE {args.rds_database};",
     ]
-    
+
     schema_creation_query.append(get_schema_from_file(f"{table_name}.sql"))
 
     for command in schema_creation_query:
