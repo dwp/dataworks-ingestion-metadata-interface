@@ -5,7 +5,7 @@ from database import *
 
 
 required_message_keys = [
-    "table-name",
+   "table-name",
 ]
 
 args = get_parameters()
@@ -27,7 +27,7 @@ def handler(event, context):
     payload_config = get_wrapped_message(event)
     table_name = payload_config['table-name']
 
-    check_or_create_schema(mysqlclient, table_name)
+    check_or_create_schema(table_name)
 
     check_users_exist(mysqlclient)
 
@@ -76,81 +76,14 @@ def get_escaped_json_string(json_dict):
     return escaped_string
 
 
-def mysql_query(mysql_connector, sql_query):
-    connection = mysql_connector.connect(
-        host=args.rds_hostname,
-        port=args.rds_port,
-        user=args.rds_username,
-        password=args.rds_password,
-        charset="utf8",
-        cursorclass=pymysql.cursors.DictCursor,
-    )
-
-    try:
-        with connection.cursor() as cursor:
-            cursor.execute(sql_query)
-        connection.commit()
-
-        with connection.cursor() as cursor:
-            cursor.execute(sql_query)
-            result = cursor.fetchall()
-            return result
-
-    except Exception as e:
-        logger.error(f'Failed to query database", "query": "{sql_query}"')
-        raise e
-
-    finally:
-        connection.close()
-
-
-def mysql_execute(mysql_connector, sql_execute_query):
-    connection = mysql_connector(
-        host=args.rds_hostname,
-        port=args.rds_port,
-        user=args.rds_username,
-        password=args.rds_password,
-        database="",
-        charset="utf8",
-        cursorclass=pymysql.cursors.DictCursor,
-    )
-
-    try:
-        with connection.cursor() as cursor:
-            cursor.execute(sql_execute_query)
-        connection.commit()
-
-    except Exception as e:
-        logger.warn(
-            f'Failed to execute query against database", "query": "{sql_execute_query}'
-        )
-
-    finally:
-        connection.close()
-
-
-def check_or_create_schema(mysql_connector, tablename):
+def check_or_create_tables(tablename):
     """
     Checks if the database exists then calls off to check if table exists
     """
-    list_databases_query = "SHOW DATABASES;"
+    check_table_exists_query = f"DESCRIBE {args.rds_database}.{table_name};"
 
-    results = mysql_query(mysqlclient, list_databases_query)
-
-    resultant_query_match = {"Database": args.rds_database}
-
-    if resultant_query_match in results:
-        logger.info("Database exists, checking if table exists")
-        check_table_exists(mysql_connector, args.rds_database, tablename)
-    else:
-        logger.info("Database doesn't exist, creating it now")
-        create_database_schema(mysql_connector, args.rds_database, tablename)
-
-
-def check_table_exists(mysql_connector, database_name, table_name):
-    check_table_exists_query = f"DESCRIBE {database_name}.{table_name};"
-
-    result = mysql_query(mysql_connector, check_table_exists_query)
+    result = execute_query(check_table_exists_query)
+    print(result)
     if result:
         logger.info("Table exists")
     else:
@@ -158,19 +91,16 @@ def check_table_exists(mysql_connector, database_name, table_name):
         raise Exception
 
 
-def create_database_schema(mysql_connector, database_name, table_name):
+def create_database_table(table_name):
     """
     Creates the required metadata store schema
     """
-    schema_creation_query = [
-        f"CREATE DATABASE {args.rds_database} CHARACTER SET 'utf8';",
-        f"USE {args.rds_database};"
-    ]
+    schema_creation_query = [f"CREATE DATABASE {args.rds_database} CHARACTER SET 'utf8';", f"USE {args.rds_database};"]
 
     schema_creation_query.append(get_schema_from_file(f"{table_name}.sql"))
 
     for command in schema_creation_query:
-        mysql_execute(mysql_connector, schema_creation_query)
+        execute_query(command)
     logger.info("Database and table created")
 
 
