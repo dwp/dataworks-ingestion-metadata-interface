@@ -26,6 +26,7 @@ def handler(event, context):
     """
     check_or_create_tables(args.rds_table_name)
 
+
 """
 TODO
 Validate the tables schema for any issues and raise exception if found
