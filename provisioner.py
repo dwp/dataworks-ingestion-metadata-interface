@@ -27,7 +27,7 @@ def handler(event, context):
     payload_config = get_wrapped_message(event)
     table_name = payload_config["table-name"]
 
-    check_or_create_schema(table_name)
+    check_or_create_tables(table_name)
 
     check_users_exist(mysqlclient)
 
@@ -80,7 +80,7 @@ def get_escaped_json_string(json_dict):
     return escaped_string
 
 
-def check_or_create_tables(tablename):
+def check_or_create_tables(table_name):
     """
     Checks if the database exists then calls off to check if table exists
     """
@@ -104,7 +104,7 @@ def create_database_table(table_name):
         f"CREATE DATABASE {args.rds_database} CHARACTER SET 'utf8';",
         f"USE {args.rds_database};",
     ]
-    
+
     schema_creation_query.append(get_schema_from_file(f"{table_name}.sql"))
 
     for command in schema_creation_query:
