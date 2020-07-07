@@ -1,78 +1,39 @@
-import json
-
 from common import *
 from database import *
 
 
-required_message_keys = [
-    "table-name",
-]
-
-args = get_parameters()
-logger = setup_logging(
-    os.environ["LOG_LEVEL"] if "LOG_LEVEL" in os.environ else "INFO",
-    args.environment,
-    args.application,
-)
-
-
 def handler(event, context):
-    """Entrypoint in AWS.
+    logger = setup_logging(
+        os.environ["LOG_LEVEL"] if "LOG_LEVEL" in os.environ else "INFO",
+        os.environ["ENVIRONMENT"],
+        os.environ["APPLICATION"],  # TODO: catch key error
+    )
 
-    Arguments:
-        event (dict): Event from AWS
-        context (dict): Context from AWS
+    args = get_parameters(event, ["table-name"])
 
-    """
-    check_or_create_tables(args.rds_table_name)
+    # create table (if not exist)
+    execute_file('create_table.sql', Table[args['table-name']])
 
+    # grant access to table
+    execute_file('grant_user.sql', Table[args['table-name']])
 
-"""
-TODO
-Validate the tables schema for any issues and raise exception if found
-Create users and grant permissions
-"""
-
-
-def check_or_create_tables(table_name):
-    """
-    Checks if the database exists then calls off to check if table exists
-    """
-    check_table_exists_query = f"DESCRIBE {args.rds_database}.{table_name};"
-
-    result = execute_query(check_table_exists_query)
-    print(result)
-    if result:
-        logger.info("Table exists")
-    else:
-        logger.error("Table doesn't exist")
-        raise Exception
+    # validate table exists and structure is correct
+    # validate users exist
 
 
-def create_database_table(table_name):
-    """
-    Creates the required metadata store schema
-    """
+def validate_table(database, table_name):
+    # check table exists
+    result = execute_query(
+        f"""
+        SELECT count(*) 
+        FROM information_schema.TABLES 
+        WHERE (TABLE_SCHEMA = `{database}`) AND (TABLE_NAME = `{table_name}`)
+        """
+    )
+    if result == 0:
+        return False
 
-    schema_creation_query = [
-        f"CREATE DATABASE {args.rds_database} CHARACTER SET 'utf8';",
-        f"USE {args.rds_database};",
-    ]
+    # check table schema
+    # TODO
 
-    schema_creation_query.append(get_schema_from_file(f"{table_name}.sql"))
-
-    for command in schema_creation_query:
-        execute_query(command)
-    logger.info("Database and table created")
-
-
-def get_schema_from_file(filename):
-    """
-    Get the SQL instructions to provision the metastore database from file
-
-    :return: a list of each SQL query in the file
-    """
-    with open(filename, "r") as sql_file:
-        queries_list = sql_file.read()
-        print(queries_list)
-        return queries_list
+    return True

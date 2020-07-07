@@ -1,4 +1,4 @@
-CREATE TABLE `ucfs` (
+CREATE TABLE `%(table_name)s` (
     `id` INT NOT NULL,
     `hbase_id` VARCHAR(45) NULL,
     `hbase_timestamp` DATETIME NULL,
