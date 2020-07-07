@@ -5,7 +5,7 @@ from database import *
 
 
 required_message_keys = [
-   "table-name",
+    "table-name",
 ]
 
 args = get_parameters()
