@@ -1,4 +1,4 @@
-# mysql-query-lambda
+# Dataworks Ingestion Metadata Interface
 
 ## AWS Lambda to connect to MySQL database, execute query, and return results
 
