@@ -37,16 +37,14 @@ def get_connection():
     )
 
 
-def execute_statement(sql):
-    connection = get_connection()
+def execute_statement(sql, connection=get_connection()):
     cursor = connection.cursor()
     cursor.execute(sql)
     connection.commit()
     connection.close()
 
 
-def execute_query(sql):
-    connection = get_connection()
+def execute_query(sql, connection=get_connection()):
     cursor = connection.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
@@ -55,9 +53,8 @@ def execute_query(sql):
     return result
 
 
-def execute_file(filename, sql_parameters):
+def execute_file(filename, sql_parameters, connection=get_connection()):
     sql = open(filename).read()
-    connection = get_connection()
     cursor = connection.cursor()
     for result in cursor.execute(sql, sql_parameters, multi=True):
         if result.with_rows:
