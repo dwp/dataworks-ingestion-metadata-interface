@@ -12,14 +12,18 @@ def handler(event, context):
 
     args = get_parameters(event, ["table-name"])
 
+    post_parameters = {
+        "table_name": Table[args["table-name"]].value,
+    }
+
     # create table if not exists
-    execute_file("create_table.sql", Table[args["table-name"]])
+    execute_file("create_table.sql", post_parameters)
 
     # Create user if not exists and grant access
-    execute_file("grant_user.sql", Table[args["table-name"]])
+    execute_file("grant_user.sql", post_parameters)
 
     # validate table and users exist and structure is correct
-    validate_table(args["rds_database_name"], args["table-name"])
+    validate_table(args["rds_database_name"], Table[args["table-name"]].value)
 
 
 def validate_table(database, table_name):
