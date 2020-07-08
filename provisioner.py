@@ -31,9 +31,7 @@ def validate_table(database, table_name):
         return False
 
     # check table schema
-    table_structure = execute_query(
-        f"DESCRIBE {database}.{table_name}"
-    )
+    table_structure = execute_query(f"DESCRIBE {database}.{table_name}")
     print(table_structure)
     # TODO
 
