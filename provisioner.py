@@ -11,31 +11,27 @@ def handler(event, context):
 
     args = get_parameters(event, ["table-name"])
 
-    if not validate_table(args.database, args["table-name"]):
-        # create table (if not exist)
-        execute_file("create_table.sql", Table[args["table-name"]])
+    # create table if not exists
+    execute_file("create_table.sql", Table[args["table-name"]])
 
-    # grant access to table
+    # Create user if not exists and grant access
     execute_file("grant_user.sql", Table[args["table-name"]])
 
-    # validate table exists and structure is correct
-    # validate users exist
+    # validate table and users exist and structure is correct
+    validate_table(args["rds_database_name"], args["table-name"])
 
 
 def validate_table(database, table_name):
     # check table exists
     result = execute_query(
-        f"""
-        SELECT count(*) 
-        FROM information_schema.TABLES 
-        WHERE (TABLE_SCHEMA = `{database}`) AND (TABLE_NAME = `{table_name}`)
-        """
+        f"SELECT count(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{database}' AND TABLE_NAME = '{table_name}';"
     )
     if result == 0:
         return False
 
     # check table schema
     # TODO
+    # MAKE INDEXES
 
     return True
 

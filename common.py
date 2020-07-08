@@ -62,8 +62,8 @@ def get_parameters(event, required_keys):
     if "RDS_USERNAME" in os.environ:
         _args["rds_username"] = os.environ["RDS_USERNAME"]
 
-    if "RDS_DATABASE" in os.environ:
-        _args["rds_database"] = os.environ["RDS_DATABASE"]
+    if "RDS_DATABASE_NAME" in os.environ:
+        _args["rds_database_name"] = os.environ["RDS_DATABASE_NAME"]
 
     if "RDS_PASSWORD_SECRET_NAME" in os.environ:
         _args["rds_password_secret_name"] = os.environ["RDS_PASSWORD_SECRET_NAME"]

@@ -20,7 +20,7 @@ def get_mysql_password():
         SecretId=os.environ["RDS_PASSWORD_SECRET_NAME"]
     )["SecretString"]
     dict = ast.literal_eval(get_secret_value_response) # convert str representation of dict to actual dict
-    return dict
+    return dict["password"]
 
 
 def get_connection():
