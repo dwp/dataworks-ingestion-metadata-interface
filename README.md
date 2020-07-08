@@ -7,3 +7,12 @@ This repo is a base to create new non-Terraform repos, adding the githooks submo
 
 After cloning this repo, please run:  
 `make bootstrap`
+
+## Developing locally
+To enable you to develop this lambda locally and be able to run it, use the Makefile commands:
+`make mysql`
+`make env_vars`
+
+This will download and run a MySQL docker container with the same version of the Aurora serverless RDS database.
+Will also set the environment variables in your shell appropriately for the lambda to run.
+You will be required to gain an AWS STS token before running the script as it calls to Secrets Manager.
