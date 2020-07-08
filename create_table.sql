@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `%(table_name)s` (
+CREATE TABLE IF NOT EXISTS `{table_name}` (
     `id` INT NOT NULL,
     `hbase_id` VARCHAR(45) NULL,
     `hbase_timestamp` DATETIME NULL,

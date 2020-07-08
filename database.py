@@ -45,6 +45,23 @@ def execute_statement(sql):
     connection.close()
 
 
+def execute_multiple_statements(sql):
+    connection = get_connection()
+    cursor = connection.cursor()
+    results = cursor.execute(sql, multi=True)
+    for result in results:
+        if result.with_rows:
+            logger.debug("Executed: {}".format(result.statement))
+        else:
+            logger.debug(
+                "Executed: {}, Rows affected: {}".format(
+                    result.statement, result.rowcount
+                )
+            )
+    connection.commit()
+    connection.close()
+
+
 def execute_query(sql):
     connection = get_connection()
     cursor = connection.cursor()
