@@ -9,5 +9,8 @@ CREATE TABLE IF NOT EXISTS `%(table_name)s` (
     `kafka_offset` INT NULL,
     `reconciled_result` TINYINT NOT NULL DEFAULT 1,
     `reconciled_timestamp` DATETIME NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    INDEX (hbase_id,hbase_timestamp),
+    INDEX (write_timestamp),
+    INDEX (reconciled_result)
 );

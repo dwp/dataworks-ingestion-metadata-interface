@@ -54,7 +54,10 @@ def execute_query(sql, connection=get_connection()):
 def execute_file(filename, sql_parameters, connection=get_connection()):
     sql = open(filename).read()
     cursor = connection.cursor()
-    for result in cursor.execute(sql, sql_parameters, multi=True):
+    results = cursor.execute(sql, sql_parameters, multi=True)
+    print(results)
+    for result in results:
+        print(result)
         if result.with_rows:
             logger.debug("Executed: {}".format(result.statement))
         else:
