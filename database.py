@@ -4,10 +4,10 @@ import os
 import mysql.connector
 import mysql.connector.pooling
 import logging
+import ast
 from enum import Enum
 
 logger = logging.getLogger(__name__)
-
 
 class Table(Enum):
     UCFS = "ucfs"
@@ -19,11 +19,8 @@ def get_mysql_password():
     get_secret_value_response = secrets_manager.get_secret_value(
         SecretId=os.environ["RDS_PASSWORD_SECRET_NAME"]
     )["SecretString"]
-    if "SecretString" in get_secret_value_response:
-        secret = get_secret_value_response["SecretString"]
-    else:
-        secret = base64.b64decode(get_secret_value_response["SecretBinary"])
-    return secret
+    dict = ast.literal_eval(get_secret_value_response) # convert str representation of dict to actual dict
+    return dict
 
 
 def get_connection():
@@ -32,8 +29,8 @@ def get_connection():
         user=os.environ["RDS_USERNAME"],
         password=get_mysql_password(),
         database=os.environ["RDS_DATABASE_NAME"],
-        ssl_ca="AmazonRootCA1.pem",
-        ssl_verify_cert=True,
+        # ssl_ca="AmazonRootCA1.pem",
+        # ssl_verify_cert=True,
     )
 
 

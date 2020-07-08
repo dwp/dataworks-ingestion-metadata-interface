@@ -1,6 +1,6 @@
 from common import *
 from database import *
-
+import json
 
 def handler(event, context):
     logger = setup_logging(
@@ -11,8 +11,9 @@ def handler(event, context):
 
     args = get_parameters(event, ["table-name"])
 
-    # create table (if not exist)
-    execute_file("create_table.sql", Table[args["table-name"]])
+    if not validate_table(args.database, args["table-name"]):
+        # create table (if not exist)
+        execute_file("create_table.sql", Table[args["table-name"]])
 
     # grant access to table
     execute_file("grant_user.sql", Table[args["table-name"]])
@@ -37,3 +38,7 @@ def validate_table(database, table_name):
     # TODO
 
     return True
+
+if __name__ == "__main__":
+    json_content = json.loads(open('event.json', 'r').read())
+    handler(json_content, None)

@@ -68,6 +68,11 @@ def get_parameters(event, required_keys):
     if "RDS_PASSWORD_SECRET_NAME" in os.environ:
         _args["rds_password_secret_name"] = os.environ["RDS_PASSWORD_SECRET_NAME"]
 
+    if "LOCAL_DEVELOPMENT" in os.environ:
+        _args["local_development"] = os.environ["LOCAL_DEVELOPMENT"]
+    else:
+        _args["local_development"] = False
+
     # Sets table name as an argument from event payload
     if "table-name" in event:
         _args["rds_table_name"] = event["table-name"]
