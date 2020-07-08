@@ -2,6 +2,7 @@ from common import *
 from database import *
 import json
 
+
 def handler(event, context):
     logger = setup_logging(
         os.environ["LOG_LEVEL"] if "LOG_LEVEL" in os.environ else "INFO",
@@ -39,6 +40,7 @@ def validate_table(database, table_name):
 
     return True
 
+
 if __name__ == "__main__":
-    json_content = json.loads(open('event.json', 'r').read())
+    json_content = json.loads(open("event.json", "r").read())
     handler(json_content, None)
