@@ -26,7 +26,7 @@ mysql:  ## Run MySQL container
 	}
 
 .PHONY: env_vars
-env_vars:  ## Display environment variables
+env_vars:  ## Generate environment variables for terminal
 	@echo "export ENVIRONMENT=local" > env_vars
 	@echo "export APPLICATION=dataworks-ingestion-metadata-interface" >> env_vars
 	@echo "export AWS_PROFILE=dataworks-development" >> env_vars
@@ -37,3 +37,17 @@ env_vars:  ## Display environment variables
 	@echo "export RDS_PASSWORD_SECRET_NAME=developing/metadatastore/demo_secret_key" >> env_vars
 	@echo "export SKIP_SSL=true" >> env_vars
 	@echo "Now run: source env_vars"
+
+.PHONY: env_vars_jetbrains
+env_vars_jetbrains:  ## Generate environment variables for pasting into JetBrains IDEs
+	@echo "ENVIRONMENT=local" > env_vars_jetbrains
+	@echo "APPLICATION=dataworks-ingestion-metadata-interface" >> env_vars_jetbrains
+	@echo "AWS_PROFILE=dataworks-development" >> env_vars_jetbrains
+	@echo "AWS_REGION=eu-west-2" >> env_vars_jetbrains
+	@echo "RDS_ENDPOINT=localhost" >> env_vars_jetbrains
+	@echo "RDS_USERNAME=root" >> env_vars_jetbrains
+	@echo "RDS_DATABASE_NAME=${APP_NAME}" >> env_vars_jetbrains
+	@echo "RDS_PASSWORD_SECRET_NAME=developing/metadatastore/demo_secret_key" >> env_vars_jetbrains
+	@echo "SKIP_SSL=true" >> env_vars_jetbrains
+	@echo "PYTHONUNBUFFERED=1" >> env_vars_jetbrains
+	@echo "Now copy contents of env_vars_jetbrains into Run Configuration"
