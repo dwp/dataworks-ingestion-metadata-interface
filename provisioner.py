@@ -41,7 +41,9 @@ def handler(event, context):
 def validate_table(database, table_name, connection):
     # check table exists
     result = execute_query(
-        f"SELECT count(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{database}' AND TABLE_NAME = '{table_name}';",
+        f"SELECT count(*) FROM INFORMATION_SCHEMA.TABLES "
+        f"WHERE TABLE_SCHEMA = '{database}' "
+        f"AND TABLE_NAME = '{table_name}';",
         connection,
     )
     if result == 0:
