@@ -4,57 +4,35 @@ import json
 
 
 def handler(event, context):
-    logger = setup_logging(
-        os.environ["LOG_LEVEL"] if "LOG_LEVEL" in os.environ else "INFO",
-        os.environ["ENVIRONMENT"],
-        os.environ["APPLICATION"],  # TODO: catch key error
-    )
+    try:
+        logger = setup_logging(
+            os.environ["LOG_LEVEL"] if "LOG_LEVEL" in os.environ else "INFO",
+            os.environ["ENVIRONMENT"],
+            os.environ["APPLICATION"],
+        )
+    except KeyError as e:
+        print(
+            f"CRITICAL failed to configure logging, environment variable {e.args[0]} missing"
+        )
+        raise e
 
-    args = get_parameters(event, ["table-name"])
+    args = get_parameters(event, ["table-name", "correlation-id"])
+
+    # TODO: Validate args
+    correlation_id = args["correlation-id"]
+    topic_name = ""
 
     connection = get_connection()
 
     # create table if not exists
-    execute_statement(
-        open("create_table.sql")
-        .read()
-        .format(table_name=Table[args["table-name"]].value),
-        connection,
-    )
-
-    # Create user if not exists and grant access
-    execute_multiple_statements(
-        open("grant_user.sql")
-        .read()
-        .format(table_name=Table[args["table-name"]].value),
-        connection,
-    )
-
-    # validate table and users exist and structure is correct
-    validate_table(
-        args["rds_database_name"], Table[args["table-name"]].value, connection
-    )
+    query = f"SELECT * FROM {Table[args['table-name']].value} WHERE correlation_id = '{correlation_id}'"
+    if bool(topic_name):
+        query += f" AND topic_name = '{topic_name}'"
+    result = execute_query(query, connection)
 
     connection.close()
 
-
-def validate_table(database, table_name, connection):
-    # check table exists
-    result = execute_query(
-        f"SELECT count(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{database}' AND TABLE_NAME = '{table_name}';",
-        connection,
-    )
-    if result == 0:
-        return False
-
-    # check table schema
-    table_structure = execute_query_to_dict(
-        f"DESCRIBE {database}.{table_name}", connection
-    )
-    print(table_structure)
-    # TODO
-
-    return True
+    return result
 
 
 if __name__ == "__main__":
