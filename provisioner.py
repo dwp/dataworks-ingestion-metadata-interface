@@ -11,7 +11,9 @@ def handler(event, context):
             os.environ["APPLICATION"],
         )
     except KeyError as e:
-        print(f"CRITICAL failed to configure logging, environment variable {e.args[0]} missing")
+        print(
+            f"CRITICAL failed to configure logging, environment variable {e.args[0]} missing"
+        )
         raise e
 
     args = get_parameters(event, ["table-name"])
