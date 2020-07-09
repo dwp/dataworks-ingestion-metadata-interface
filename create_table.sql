@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS `{table_name}` (
-    `id` INT NOT NULL,
+    `id` INT NOT NULL AUTO_INCREMENT,
     `hbase_id` VARCHAR(45) NULL,
     `hbase_timestamp` DATETIME NULL,
     `write_timestamp` DATETIME NULL,
