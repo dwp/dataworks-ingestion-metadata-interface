@@ -82,6 +82,7 @@ def validate_table(database, table_name, connection):
 
             else:
                 logger.error(f"{database}.{table_name} is missing {column_name}")
+                raise Exception('MissingColumn')
 
         finally:
             logger.info(f"{column_name} column has the correct schema settings.")
