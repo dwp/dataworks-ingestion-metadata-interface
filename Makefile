@@ -32,7 +32,7 @@ env_vars:  ## Display environment variables
 	@echo "export AWS_PROFILE=dataworks-development" >> env_vars
 	@echo "export AWS_REGION=eu-west-2" >> env_vars
 	@echo "export RDS_ENDPOINT=localhost" >> env_vars
-	@echo "export RDS_USERNAME=master" >> env_vars
+	@echo "export RDS_USERNAME=root" >> env_vars
 	@echo "export RDS_DATABASE_NAME=${APP_NAME}" >> env_vars
 	@echo "export RDS_PASSWORD_SECRET_NAME=developing/metadatastore/demo_secret_key" >> env_vars
 	@echo "Now run: source env_vars"
