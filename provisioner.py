@@ -127,28 +127,26 @@ def validate_table(database, table_name, connection):
         },
     }
 
+    table_valid = True
     for column_name in column_structure_required:
-        try:
-            if column_name in table_structure.keys():
-                correct_subvalues = column_structure_required[column_name]
-                result_subvalues = table_structure[column_name]
+        if column_name in table_structure.keys():
+            correct_subvalues = column_structure_required[column_name]
+            result_subvalues = table_structure[column_name]
 
-                for key, value in correct_subvalues.items():
-                    if key in result_subvalues and value == result_subvalues[key]:
-                        pass
-                    else:
-                        logger.error(
-                            f"{column_name} - {key} has the incorrect structure."
-                        )
-                        raise Exception("InvalidColumnStructure")
+            for key, value in correct_subvalues.items():
+                if key in result_subvalues and result_subvalues[key] is not value:
+                    logger.error(
+                        f"{column_name}.{key} is incorrect: expected {value}, found {result_subvalues[key]}."
+                    )
+                    table_valid = False
+        else:
+            logger.error(f"{database}.{table_name} is missing column: {column_name}")
+            table_valid = False
 
-            else:
-                logger.error(f"{database}.{table_name} is missing {column_name}")
+        logger.debug(f"{column_name} column has the correct schema settings.")
 
-        finally:
-            logger.info(f"{column_name} column has the correct schema settings.")
-
-    return True
+    logger.info(f"Table {table_name} schema is valid")
+    return table_valid
 
 
 if __name__ == "__main__":
