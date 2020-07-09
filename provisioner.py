@@ -4,11 +4,15 @@ import json
 
 
 def handler(event, context):
-    logger = setup_logging(
-        os.environ["LOG_LEVEL"] if "LOG_LEVEL" in os.environ else "INFO",
-        os.environ["ENVIRONMENT"],
-        os.environ["APPLICATION"],  # TODO: catch key error
-    )
+    try:
+        logger = setup_logging(
+            os.environ["LOG_LEVEL"] if "LOG_LEVEL" in os.environ else "INFO",
+            os.environ["ENVIRONMENT"],
+            os.environ["APPLICATION"],
+        )
+    except KeyError as e:
+        print(f"CRITICAL failed to configure logging, environment variable {e.args[0]} missing")
+        raise e
 
     args = get_parameters(event, ["table-name"])
 
