@@ -66,6 +66,31 @@ def execute_query(sql, connection):
     return result
 
 
+def execute_query_to_dict(sql, connection, index_column=""):
+    """
+    Execute a single SQL query and return a dict of result rows
+    Each dict item will contain a dict of values indexed by column name
+    Each row will be indexed by index_column or default to first column name
+
+    :param sql: SQL query to execute
+    :param connection: database connection to use
+    :param index_column: column name that contains value to use to index dict (default to first column), should be a unique column
+    :return:
+    """
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    desc = cursor.description
+    column_names = [col[0] for col in desc]
+    data = [dict(zip(column_names, row)) for row in cursor.fetchall()]
+    connection.commit()
+    result = {}
+    if index_column is "":
+        index_column = column_names[0]
+    for item in data:
+        result[item[index_column]] = item
+    return result
+
+
 def execute_file(filename, sql_parameters, connection):
     sql = open(filename).read()
     cursor = connection.cursor()

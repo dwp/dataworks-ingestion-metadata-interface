@@ -48,7 +48,9 @@ def validate_table(database, table_name, connection):
         return False
 
     # check table schema
-    table_structure = execute_query(f"DESCRIBE {database}.{table_name}")
+    table_structure = execute_query_to_dict(
+        f"DESCRIBE {database}.{table_name}", connection
+    )
     print(table_structure)
     # TODO
 
