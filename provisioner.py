@@ -12,11 +12,14 @@ def handler(event, context):
 
     args = get_parameters(event, ["table-name"])
 
+    connection = get_connection()
+
     # create table if not exists
     execute_statement(
         open("create_table.sql")
         .read()
         .format(table_name=Table[args["table-name"]].value),
+        connection,
     )
 
     # Create user if not exists and grant access
@@ -24,16 +27,22 @@ def handler(event, context):
         open("grant_user.sql")
         .read()
         .format(table_name=Table[args["table-name"]].value),
+        connection,
     )
 
     # validate table and users exist and structure is correct
-    validate_table(args["rds_database_name"], Table[args["table-name"]].value)
+    validate_table(
+        args["rds_database_name"], Table[args["table-name"]].value, connection
+    )
+
+    connection.close()
 
 
-def validate_table(database, table_name):
+def validate_table(database, table_name, connection):
     # check table exists
     result = execute_query(
-        f"SELECT count(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{database}' AND TABLE_NAME = '{table_name}';"
+        f"SELECT count(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{database}' AND TABLE_NAME = '{table_name}';",
+        connection,
     )
     if result == 0:
         return False
