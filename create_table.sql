@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS `{table_name}` (
     `hbase_timestamp` DATETIME NULL,
     `write_timestamp` DATETIME DEFAULT CURRENT_TIMESTAMP,
     `correlation_id` VARCHAR(160) NULL,
-    `topic_name` VARCHAR(45) NULL,
+    `topic_name` VARCHAR(160) NULL,
     `kafka_partition` INT NULL,
     `kafka_offset` INT NULL,
     `reconciled_result` TINYINT(1) NOT NULL DEFAULT 0,
