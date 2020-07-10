@@ -114,7 +114,7 @@ def validate_table(database, table_name, connection):
         },
         "reconciled_result": {
             "Field": "reconciled_result",
-            "Type": "tinyint(4)",
+            "Type": "tinyint(1)",
             "Null": "NO",
             "Key": "MUL",
             "Default": "0",

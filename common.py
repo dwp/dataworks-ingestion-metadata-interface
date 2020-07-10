@@ -67,11 +67,6 @@ def get_parameters(event, required_keys):
     if "RDS_PASSWORD_SECRET_NAME" in os.environ:
         _args["rds_password_secret_name"] = os.environ["RDS_PASSWORD_SECRET_NAME"]
 
-    if "LOCAL_DEVELOPMENT" in os.environ:
-        _args["local_development"] = os.environ["LOCAL_DEVELOPMENT"]
-    else:
-        _args["local_development"] = False
-
     # Validate event and environment variables
     missing_event_keys = []
     for required_message_key in required_keys:
