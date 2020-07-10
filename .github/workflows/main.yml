@@ -4,9 +4,10 @@ on:
   push:
     branches:
       - master
-  pull-request:
+  pull_request:
     branches:
-      - *
+      - master
+      - DW-4424
 
 jobs:
   get-publish-version:
