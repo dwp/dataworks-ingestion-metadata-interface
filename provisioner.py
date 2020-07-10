@@ -61,7 +61,12 @@ def validate_table(database, table_name, connection):
     )
 
     column_structure_required = {
-        "id": {"Field": "id", "Type": "int(11)", "Null": "NO", "Key": "PRI"},
+        "id": {
+            "Field": "id",
+            "Type": "int(11)",
+            "Null": "NO",
+            "Key": "PRI"
+        },
         "hbase_id": {
             "Field": "hbase_id",
             "Type": "varchar(45)",
@@ -134,7 +139,7 @@ def validate_table(database, table_name, connection):
             result_subvalues = table_structure[column_name]
 
             for key, value in correct_subvalues.items():
-                if key in result_subvalues and result_subvalues[key] is not value:
+                if key in result_subvalues and result_subvalues[key] != value:
                     logger.error(
                         f"{column_name}.{key} is incorrect: expected {value}, found {result_subvalues[key]}."
                     )
