@@ -20,10 +20,10 @@ def get_mysql_password():
     get_secret_value_response = secrets_manager.get_secret_value(
         SecretId=os.environ["RDS_PASSWORD_SECRET_NAME"]
     )["SecretString"]
-    dict = ast.literal_eval(
+    secret_dict = ast.literal_eval(
         get_secret_value_response
-    )  # convert str representation of dict to actual dict
-    return dict["password"]
+    )  # converts str representation of dict to actual dict
+    return secret_dict["password"]
 
 
 def get_connection():
@@ -84,7 +84,7 @@ def execute_query_to_dict(sql, connection, index_column=""):
     data = [dict(zip(column_names, row)) for row in cursor.fetchall()]
     connection.commit()
     result = {}
-    if index_column is "":
+    if index_column == "":
         index_column = column_names[0]
     for item in data:
         result[item[index_column]] = item
