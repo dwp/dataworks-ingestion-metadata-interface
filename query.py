@@ -23,7 +23,9 @@ def handler(event, context):
     # Validate args
     args_valid = True
     if not validate_arg(args["correlation-id"]):
-        logger.error(f"Required argument 'correlation-id' has an invalid value of: {args['correlation-id']}")
+        logger.error(
+            f"Required argument 'correlation-id' has an invalid value of: {args['correlation-id']}"
+        )
         args_valid = False
 
     topic_name = None
@@ -31,7 +33,9 @@ def handler(event, context):
         if validate_arg(args["topic-name"]):
             topic_name = args["topic-name"]
         else:
-            logger.error(f"Optional argument 'topic-name' has an invalid value of: {args['topic-name']}")
+            logger.error(
+                f"Optional argument 'topic-name' has an invalid value of: {args['topic-name']}"
+            )
             args_valid = False
 
     if not args_valid:
