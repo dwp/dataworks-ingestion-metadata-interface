@@ -43,7 +43,7 @@ def handler(event, context):
 
     connection = get_connection()
 
-    # create table if not exists
+    # Build query and execute
     query = f"SELECT * FROM {Table[args['table-name']].value} WHERE correlation_id = '{args['correlation-id']}'"
     if bool(topic_name):
         query += f" AND topic_name = '{topic_name}'"
