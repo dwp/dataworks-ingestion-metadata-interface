@@ -42,10 +42,8 @@ jobs:
           cp *.sql artifacts
           cp AmazonRootCA1.pem artifacts
       - name: Produce zip
-        uses: montudor/action-zip@v0.1.0
         working-directory: ./artifacts
-        with:
-          args: zip -qq -r ../mysql-query-lmabda-${{ needs.get-publish-version.outputs.publish-version }}.zip *
+        run: zip -qq -r ../mysql-query-lmabda-${{ needs.get-publish-version.outputs.publish-version }}.zip *
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@latest
