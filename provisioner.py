@@ -4,11 +4,17 @@ import json
 
 
 def handler(event, context):
-    logger = setup_logging(
-        os.environ["LOG_LEVEL"] if "LOG_LEVEL" in os.environ else "INFO",
-        os.environ["ENVIRONMENT"],
-        os.environ["APPLICATION"],  # TODO: catch key error
-    )
+    try:
+        logger = setup_logging(
+            os.environ["LOG_LEVEL"] if "LOG_LEVEL" in os.environ else "INFO",
+            os.environ["ENVIRONMENT"],
+            os.environ["APPLICATION"],
+        )
+    except KeyError as e:
+        print(
+            f"CRITICAL failed to configure logging, environment variable {e.args[0]} missing"
+        )
+        raise e
 
     args = get_parameters(event, ["table-name"])
 
@@ -55,39 +61,93 @@ def validate_table(database, table_name, connection):
     )
 
     column_structure_required = {
-        'id': {'Field': 'id', 'Type': 'int(11)', 'Null': 'NO', 'Key': 'PRI'},
-        'hbase_id': {'Field': 'hbase_id', 'Type': 'varchar(45)', 'Null': 'YES', 'Key': 'MUL', 'Default': None},
-        'hbase_timestamp': {'Field': 'hbase_timestamp', 'Type': 'datetime', 'Null': 'YES', 'Key': '', 'Default': None},
-        'write_timestamp': {'Field': 'write_timestamp', 'Type': 'datetime', 'Null': 'YES', 'Key': 'MUL', 'Default': None},
-        'correlation_id': {'Field': 'correlation_id', 'Type': 'varchar(45)', 'Null': 'YES', 'Key': '', 'Default': None},
-        'topic_name': {'Field': 'topic_name', 'Type': 'varchar(45)', 'Null': 'YES', 'Key': '', 'Default': None},
-        'kafka_partition': {'Field': 'kafka_partition', 'Type': 'int(11)', 'Null': 'YES', 'Key': '', 'Default': None},
-        'kafka_offset': {'Field': 'kafka_offset', 'Type': 'int(11)', 'Null': 'YES', 'Key': '', 'Default': None},
-        'reconciled_result': {'Field': 'reconciled_result', 'Type': 'tinyint(4)', 'Null': 'NO', 'Key': 'MUL', 'Default': '0'},
-        'reconciled_timestamp': {'Field': 'reconciled_timestamp', 'Type': 'datetime', 'Null': 'YES', 'Key': '', 'Default': None}
+        "id": {"Field": "id", "Type": "int(11)", "Null": "NO", "Key": "PRI"},
+        "hbase_id": {
+            "Field": "hbase_id",
+            "Type": "varchar(45)",
+            "Null": "YES",
+            "Key": "MUL",
+            "Default": None,
+        },
+        "hbase_timestamp": {
+            "Field": "hbase_timestamp",
+            "Type": "datetime",
+            "Null": "YES",
+            "Key": "",
+            "Default": None,
+        },
+        "write_timestamp": {
+            "Field": "write_timestamp",
+            "Type": "datetime",
+            "Null": "YES",
+            "Key": "MUL",
+            "Default": None,
+        },
+        "correlation_id": {
+            "Field": "correlation_id",
+            "Type": "varchar(45)",
+            "Null": "YES",
+            "Key": "",
+            "Default": None,
+        },
+        "topic_name": {
+            "Field": "topic_name",
+            "Type": "varchar(45)",
+            "Null": "YES",
+            "Key": "",
+            "Default": None,
+        },
+        "kafka_partition": {
+            "Field": "kafka_partition",
+            "Type": "int(11)",
+            "Null": "YES",
+            "Key": "",
+            "Default": None,
+        },
+        "kafka_offset": {
+            "Field": "kafka_offset",
+            "Type": "int(11)",
+            "Null": "YES",
+            "Key": "",
+            "Default": None,
+        },
+        "reconciled_result": {
+            "Field": "reconciled_result",
+            "Type": "tinyint(4)",
+            "Null": "NO",
+            "Key": "MUL",
+            "Default": "0",
+        },
+        "reconciled_timestamp": {
+            "Field": "reconciled_timestamp",
+            "Type": "datetime",
+            "Null": "YES",
+            "Key": "",
+            "Default": None,
+        },
     }
 
+    table_valid = True
     for column_name in column_structure_required:
-        try:
-            if column_name in table_structure.keys():
-                correct_subvalues = column_structure_required[column_name]
-                result_subvalues = table_structure[column_name]
+        if column_name in table_structure.keys():
+            correct_subvalues = column_structure_required[column_name]
+            result_subvalues = table_structure[column_name]
 
-                for key, value in correct_subvalues.items():
-                    if key in result_subvalues and value == result_subvalues[key]:
-                        pass
-                    else:
-                        logger.error(f"{column_name} - {key} has the incorrect structure.")
-                        raise Exception('InvalidColumnStructure')
+            for key, value in correct_subvalues.items():
+                if key in result_subvalues and result_subvalues[key] is not value:
+                    logger.error(
+                        f"{column_name}.{key} is incorrect: expected {value}, found {result_subvalues[key]}."
+                    )
+                    table_valid = False
+        else:
+            logger.error(f"{database}.{table_name} is missing column: {column_name}")
+            table_valid = False
 
-            else:
-                logger.error(f"{database}.{table_name} is missing {column_name}")
-                raise Exception('MissingColumn')
+        logger.debug(f"{column_name} column has the correct schema settings.")
 
-        finally:
-            logger.info(f"{column_name} column has the correct schema settings.")
+    logger.info(f"Table {table_name} schema is valid")
+    return table_valid
 
-    return True
 
 if __name__ == "__main__":
     json_content = json.loads(open("event.json", "r").read())

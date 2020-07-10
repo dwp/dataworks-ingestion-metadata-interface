@@ -90,20 +90,3 @@ def execute_query_to_dict(sql, connection, index_column=""):
         result[item[index_column]] = item
     return result
 
-
-def execute_file(filename, sql_parameters, connection):
-    sql = open(filename).read()
-    cursor = connection.cursor()
-    print(sql_parameters)
-    results = cursor.execute(sql, sql_parameters, multi=True)
-    for result in results:
-        if result.with_rows:
-            logger.debug("Executed: {}".format(result.statement))
-        else:
-            logger.debug(
-                "Executed: {}, Rows affected: {}".format(
-                    result.statement, result.rowcount
-                )
-            )
-
-    connection.commit()
