@@ -3,7 +3,6 @@ import socket
 import boto3
 import os
 import sys
-import base64
 from database import Table
 
 
