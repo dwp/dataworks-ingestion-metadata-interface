@@ -78,7 +78,7 @@ def get_parameters(event, required_keys):
 
     # Validate event and environment variables
     missing_event_keys = []
-    for required_arg in (required_keys + required_env_vars):
+    for required_arg in required_keys + required_env_vars:
         if required_arg not in _args:
             missing_event_keys.append(required_arg)
     if missing_event_keys:
