@@ -89,4 +89,3 @@ def execute_query_to_dict(sql, connection, index_column=""):
     for item in data:
         result[item[index_column]] = item
     return result
-
