@@ -6,7 +6,7 @@ import os
 
 def handler(event, context):
     try:
-         setup_logging(
+        setup_logging(
             os.environ["LOG_LEVEL"] if "LOG_LEVEL" in os.environ else "INFO",
             os.environ["ENVIRONMENT"],
             os.environ["APPLICATION"],
