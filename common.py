@@ -67,11 +67,20 @@ def get_parameters(event, required_keys):
     if "RDS_PASSWORD_SECRET_NAME" in os.environ:
         _args["rds_password_secret_name"] = os.environ["RDS_PASSWORD_SECRET_NAME"]
 
+    required_env_vars = [
+        "ENVIRONMENT",
+        "APPLICATION",
+        "RDS_ENDPOINT",
+        "RDS_USERNAME",
+        "RDS_DATABASE_NAME",
+        "RDS_PASSWORD_SECRET_NAME",
+    ]
+
     # Validate event and environment variables
     missing_event_keys = []
-    for required_message_key in required_keys:
-        if required_message_key not in _args:
-            missing_event_keys.append(required_message_key)
+    for required_arg in (required_keys + required_env_vars):
+        if required_arg not in _args:
+            missing_event_keys.append(required_arg)
     if missing_event_keys:
         raise KeyError(
             "KeyError: The following required keys are missing from the event or env vars: {}".format(
