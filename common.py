@@ -73,10 +73,6 @@ def get_parameters(event, required_keys):
     else:
         _args["local_development"] = False
 
-    # Sets table name as an argument from event payload
-    if "table-name" in event:
-        _args["rds_table_name"] = event["table-name"]
-
     # Validate event and environment variables
     missing_event_keys = []
     for required_message_key in required_keys:
