@@ -38,7 +38,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt -t artifacts
-          cp {*.py, *.sql, AmazonRootCA1.pem} artifacts
+          cp ./{*.py, *.sql, AmazonRootCA1.pem} artifacts
       - uses: montudor/action-zip@v0.1.0
         with:
           args: zip -qq -r mysql-query-lmabda-${{ needs.get-publish-version.outputs.publish-version }}.zip artifacts/*
