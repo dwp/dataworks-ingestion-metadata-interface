@@ -1,3 +1,4 @@
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=dwp_dataworks-ingestion-metadata-interface&metric=alert_status)](https://sonarcloud.io/dashboard?id=dwp_dataworks-ingestion-metadata-interface)
 # Dataworks Ingestion Metadata Interface
 
 ## AWS Lambda to connect to MySQL database, execute query, and return results
