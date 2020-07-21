@@ -38,11 +38,14 @@ def handler(event, context):
     )
 
     # validate table and users exist and structure is correct
-    validate_table(
+    table_valid = validate_table(
         args["rds_database_name"], Table[args["table-name"]].value, connection
     )
 
     connection.close()
+
+    if not table_valid:
+        raise SystemExit(f'Table {Table[args["table-name"]].value} schema is invalid')
 
 
 def validate_table(database, table_name, connection):
