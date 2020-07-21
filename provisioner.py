@@ -82,7 +82,7 @@ def validate_table(database, table_name, connection):
             "Type": "datetime",
             "Null": "YES",
             "Key": "MUL",
-            "Default": None,
+            "Default": "CURRENT_TIMESTAMP",
         },
         "correlation_id": {
             "Field": "correlation_id",

@@ -68,12 +68,12 @@ def get_parameters(event, required_keys):
         _args["rds_password_secret_name"] = os.environ["RDS_PASSWORD_SECRET_NAME"]
 
     required_env_vars = [
-        "ENVIRONMENT",
-        "APPLICATION",
-        "RDS_ENDPOINT",
-        "RDS_USERNAME",
-        "RDS_DATABASE_NAME",
-        "RDS_PASSWORD_SECRET_NAME",
+        "environment",
+        "application",
+        "rds_endpoint",
+        "rds_username",
+        "rds_database_name",
+        "rds_password_secret_name",
     ]
 
     # Validate event and environment variables
