@@ -45,7 +45,7 @@ def handler(event, context):
     connection.close()
 
     if not table_valid:
-        raise SystemExit(f'Table {Table[args["table-name"]].value} schema is invalid')
+        raise Exception(f'Schema is invalid in table: {Table[args["table-name"]].value}')
 
 
 def validate_table(database, table_name, connection):
