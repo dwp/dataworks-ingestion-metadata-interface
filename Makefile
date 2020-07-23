@@ -12,19 +12,6 @@ help:
 bootstrap: ## Bootstrap local environment for first use
 	@make git-hooks
 
-.PHONY: git-hooks
-git-hooks: ## Set up hooks in .githooks
-	@git submodule update --init .githooks ; \
-	git config core.hooksPath .githooks \
-
-.PHONY: mysql
-mysql:  ## Run MySQL container
-	@{ \
-		echo "INFO: remove $(APP_NAME) container if exists"; \
-		docker rm $(APP_NAME); \
-		docker run --name $(APP_NAME) -d -e MYSQL_ROOT_PASSWORD=passw0rd -e MYSQL_DATABASE=${APP_NAME} -p 3306:3306 mysql:5.7; \
-	}
-
 .PHONY: env_vars
 env_vars:  ## Generate environment variables for terminal
 	@echo "export ENVIRONMENT=local" > env_vars
@@ -51,3 +38,8 @@ env_vars_jetbrains:  ## Generate environment variables for pasting into JetBrain
 	@echo "SKIP_SSL=true" >> env_vars_jetbrains
 	@echo "PYTHONUNBUFFERED=1" >> env_vars_jetbrains
 	@echo "Now copy contents of env_vars_jetbrains into Run Configuration"
+.PHONY: git-hooks
+git-hooks: ## Set up hooks in .githooks
+  @git submodule update --init .githooks ; \
+  git config core.hooksPath .githooks \
+
