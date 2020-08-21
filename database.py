@@ -1,11 +1,11 @@
-import boto3
-import base64
+import ast
+import logging
 import os
+from enum import Enum
+
+import boto3
 import mysql.connector
 import mysql.connector.pooling
-import logging
-import ast
-from enum import Enum
 
 logger = logging.getLogger(__name__)
 
