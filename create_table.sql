@@ -1,4 +1,3 @@
-DROP TABLE `{table_name}`;
 CREATE TABLE IF NOT EXISTS `{table_name}` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `hbase_id` VARCHAR(2048) NULL,
