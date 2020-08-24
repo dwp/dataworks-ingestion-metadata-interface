@@ -70,7 +70,7 @@ def validate_table(database, table_name, connection):
         "id": {"Field": "id", "Type": "int(11)", "Null": "NO", "Key": "PRI"},
         "hbase_id": {
             "Field": "hbase_id",
-            "Type": "varchar(45)",
+            "Type": "varchar(2048)",
             "Null": "YES",
             "Key": "MUL",
             "Default": None,
