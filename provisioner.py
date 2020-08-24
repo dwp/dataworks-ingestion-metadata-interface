@@ -65,7 +65,7 @@ def validate_table(database, table_name, connection):
     table_structure = execute_query_to_dict(
         f"DESCRIBE {database}.{table_name}", connection, "Field"
     )
-    
+
     logger.debug(table_structure)
 
     column_structure_required = {
