@@ -91,14 +91,14 @@ def validate_table(database, table_name, connection):
         },
         "correlation_id": {
             "Field": "correlation_id",
-            "Type": "varchar(160)",
+            "Type": "varchar(1024)",
             "Null": "YES",
             "Key": "",
             "Default": None,
         },
         "topic_name": {
             "Field": "topic_name",
-            "Type": "varchar(160)",
+            "Type": "varchar(1024)",
             "Null": "YES",
             "Key": "",
             "Default": None,
