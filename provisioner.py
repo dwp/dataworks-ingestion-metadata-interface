@@ -31,8 +31,7 @@ def handler(event, context):
 
     # temporarily drop bad data
     execute_statement(
-        "DELETE FROM \"ucfs\" WHERE topic_name = \"data.equality\"",
-        connection
+        'DELETE FROM "ucfs" WHERE topic_name = "data.equality"', connection
     )
 
     # Create user if not exists and grant access
