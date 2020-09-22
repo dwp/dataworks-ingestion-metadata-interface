@@ -1,3 +1,5 @@
+from common import *
+from database import *
 import json
 import os
 
@@ -32,11 +34,6 @@ def handler(event, context):
         open("grant_user.sql")
         .read()
         .format(table_name=Table[args["table-name"]].value),
-        connection,
-    )
-
-    execute_statement(
-        "DELETE FROM ucfs WHERE topic_name = 'data.equality';",
         connection,
     )
 
