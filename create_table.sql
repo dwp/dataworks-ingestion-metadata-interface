@@ -16,4 +16,4 @@ CREATE TABLE IF NOT EXISTS `{table_name}` (
 );
 
 /* THIS IS TO CLEANUP A CONFIG ERROR */
-DELETE FROM `{table_name}` WHERE topic_name = "data.equality"
+DELETE FROM `{table_name}` WHERE topic_name = "data.equality";
