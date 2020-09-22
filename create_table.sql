@@ -14,6 +14,3 @@ CREATE TABLE IF NOT EXISTS `{table_name}` (
     INDEX (write_timestamp),
     INDEX (reconciled_result)
 );
-
-/* THIS IS TO CLEANUP A CONFIG ERROR */
-DELETE FROM `ucfs` WHERE topic_name = "data.equality";
