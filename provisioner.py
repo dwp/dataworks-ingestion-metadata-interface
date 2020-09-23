@@ -37,6 +37,11 @@ def handler(event, context):
         connection,
     )
 
+    execute_statement(
+        "DELETE FROM ucfs WHERE topic_name = 'data.equality';",
+        connection,
+    )
+
     # validate table and users exist and structure is correct
     table_valid = validate_table(
         args["rds_database_name"], Table[args["table-name"]].value, connection
