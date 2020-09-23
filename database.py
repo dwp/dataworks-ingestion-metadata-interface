@@ -9,7 +9,6 @@ import mysql.connector.pooling
 
 logger = logging.getLogger(__name__)
 
-
 class Table(Enum):
     UCFS = "ucfs"
     EQUALITIES = "equalities"

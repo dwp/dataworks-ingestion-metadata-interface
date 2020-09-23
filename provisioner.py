@@ -1,8 +1,9 @@
-from common import *
-from database import *
 import json
 import os
+import logging
 
+from common import *
+from database import *
 
 def handler(event, context):
     try:
@@ -19,28 +20,42 @@ def handler(event, context):
 
     args = get_parameters(event, ["table-name"])
 
+    logger = logging.getLogger(__name__)
+
     connection = get_connection()
 
-    # create table if not exists
+    logger.info("Create table if not exists...")
     execute_statement(
         open("create_table.sql")
-        .read()
-        .format(table_name=Table[args["table-name"]].value),
+            .read()
+            .format(table_name=Table[args["table-name"]].value),
         connection,
     )
 
-    # Create user if not exists and grant access
+    logger.info("Create user if not exists and grant access...")
     execute_multiple_statements(
         open("grant_user.sql")
-        .read()
-        .format(table_name=Table[args["table-name"]].value),
+            .read()
+            .format(table_name=Table[args["table-name"]].value),
         connection,
     )
 
-    # validate table and users exist and structure is correct
+    logger.info("Validate table and users exist and structure is correct...")
     table_valid = validate_table(
         args["rds_database_name"], Table[args["table-name"]].value, connection
     )
+
+    if args["delete_old_data"].toLower() == "true":
+        logger.warn("Deleting old data...")
+        for target_table in Table.__members__:
+            logger.warn(f"Deleting from {target_table}...")
+            execute_statement(
+                f"DELETE FROM {Table[target_table].value};",
+                connection,
+            )
+        logger.warn("...Old data deleted")
+    else:
+        logger.info("Skipping delete of old data...")
 
     connection.close()
 
@@ -51,7 +66,7 @@ def handler(event, context):
 
 
 def validate_table(database, table_name, connection):
-    # check table exists
+    logger.info(f"Checking table exists: '{table_name}'")
     result = execute_query(
         f"SELECT count(*) FROM INFORMATION_SCHEMA.TABLES "
         f"WHERE TABLE_SCHEMA = '{database}' "
@@ -61,7 +76,7 @@ def validate_table(database, table_name, connection):
     if result == 0:
         return False
 
-    # check table schema
+    logger.info(f"Checking table schema: '{table_name}'")
     table_structure = execute_query_to_dict(
         f"DESCRIBE {database}.{table_name}", connection, "Field"
     )
@@ -149,7 +164,7 @@ def validate_table(database, table_name, connection):
             logger.error(f"{database}.{table_name} is missing column: {column_name}")
             table_valid = False
 
-        logger.debug(f"{column_name} column has the correct schema settings.")
+        logger.info(f"{column_name} column has the correct schema settings.")
 
     if table_valid:
         logger.info(f"Table {table_name} schema is valid")

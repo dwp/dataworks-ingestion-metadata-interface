@@ -67,6 +67,11 @@ def get_parameters(event, required_keys):
     if "RDS_PASSWORD_SECRET_NAME" in os.environ:
         _args["rds_password_secret_name"] = os.environ["RDS_PASSWORD_SECRET_NAME"]
 
+    if "DELETE_OLD_DATA" in os.environ:
+        _args["delete_old_data"] = os.environ["DELETE_OLD_DATA"]
+    else
+        _args["delete_old_data"] = "false"
+
     required_env_vars = [
         "environment",
         "application",
@@ -90,8 +95,10 @@ def get_parameters(event, required_keys):
 
     # Validate table name
     if "table-name" in _args and _args["table-name"].upper() not in Table.__members__:
+        allowed_values = Table.__members__
         raise ValueError(
-            f"ValueError: table-name {_args['table-name']} is invalid or not supported"
+            f"ValueError: table-name {_args['table-name']} is invalid or not supported, "
+            f"must be one of {allowed_values}."
         )
 
     return _args
