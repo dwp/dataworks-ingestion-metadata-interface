@@ -22,12 +22,6 @@ def handler(event, context):
     connection = get_connection()
 
     # create table if not exists
-
-    execute_statement(
-        "DROP TABLE {table_name}".format(table_name=Table[args["table-name"]].value),
-        connection,
-    )
-
     execute_statement(
         open("create_table.sql")
         .read()
