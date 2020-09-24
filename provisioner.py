@@ -82,7 +82,7 @@ def validate_table(database, table_name, connection):
         },
         "hbase_timestamp": {
             "Field": "hbase_timestamp",
-            "Type": "datetime",
+            "Type": "bigint",
             "Null": "YES",
             "Key": "",
             "Default": None,
