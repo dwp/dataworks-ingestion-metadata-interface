@@ -37,9 +37,15 @@ def handler(event, context):
         connection,
     )
 
-    logger.info("Deleting content from UCFS table")
+    logger.info("Deleting content from ucfs table")
     execute_statement(
-        "DELETE FROM ucfs WHERE topic_name = 'data.equality';",
+        "DELETE FROM ucfs;",
+        connection,
+    )
+
+    logger.info("Deleting content from equalities table")
+    execute_statement(
+        "DELETE FROM equalities;",
         connection,
     )
 
