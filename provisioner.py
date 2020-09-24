@@ -37,12 +37,6 @@ def handler(event, context):
         connection,
     )
 
-    logger.info(f"Deleting content from {Table[args['table-name']].value} table")
-    execute_statement(
-        "DELETE FROM {table_name}".format(table_name=Table[args["table-name"]].value),
-        connection,
-    )
-
     # validate table and users exist and structure is correct
     table_valid = validate_table(
         args["rds_database_name"], Table[args["table-name"]].value, connection
