@@ -89,13 +89,15 @@ def execute_query_to_dict(sql, connection, index_column=""):
     """
     global logger
 
-    logger.info(f"Executing the sql statement: \"{sql}\" using index column \"{index_column}\"")
+    logger.info(
+        f'Executing the sql statement: "{sql}" using index column "{index_column}"'
+    )
     cursor = connection.cursor()
     cursor.execute(sql)
     desc = cursor.description
     column_names = [col[0] for col in desc]
 
-    logger.info(f"Retrieved column names: \"{column_names}\"")
+    logger.info(f'Retrieved column names: "{column_names}"')
     data = [dict(zip(column_names, row)) for row in cursor.fetchall()]
 
     logger.info("Retrieved data, committing transaction")

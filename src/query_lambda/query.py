@@ -95,7 +95,7 @@ def build_query(args):
             for count in range(1, len(queryable_options)):
                 query += f" {query_connector_type} {queryable_options[count]}"
 
-    logger.info(f"Query built as \"{query}\"")
+    logger.info(f'Query built as "{query}"')
     return query
 
 
