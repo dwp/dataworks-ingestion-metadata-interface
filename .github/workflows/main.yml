@@ -34,10 +34,10 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt -t artifacts
-          cp src/common/* artifacts/common
-          cp src/provisioner_lambda/* artifacts/provisioner_lambda
-          cp src/query_lambda/* artifacts/query_lambda
-          cp src/resources/* artifacts/resources
+          cp src/common/*.py artifacts/common
+          cp src/provisioner_lambda/*.py artifacts/provisioner_lambda
+          cp src/query_lambda/*.py artifacts/query_lambda
+          cp src/resources/*.sql artifacts/resources
           cp AmazonRootCA1.pem artifacts
       - name: Produce zip
         working-directory: ./artifacts
