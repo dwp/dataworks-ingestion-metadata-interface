@@ -38,12 +38,11 @@ def handler(event, context):
 
     # Validate args
     args_valid = True
-    if "topic-name" in args:
-        if not validate_arg(args["topic-name"]):
-            logger.error(
-                f"Optional argument 'topic-name' has an invalid value of: {args['topic-name']}"
-            )
-            args_valid = False
+    if "topic-name" in args and not validate_arg(args["topic-name"]):
+        logger.error(
+            f"Optional argument 'topic-name' has an invalid value of: {args['topic-name']}"
+        )
+        args_valid = False
 
     if not args_valid:
         raise ValueError("Arguments passed to handler failed to validate")
