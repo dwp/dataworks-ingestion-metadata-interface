@@ -34,9 +34,6 @@ jobs:
           mkdir provisioner_lambda
           mkdir query_lambda
           mkdir resources
-      - name: Generate common sub directories
-        working-directory: ./artifacts/common
-        run: mkdir common
       - name: Set up Python 3.8
         uses: actions/setup-python@v1
         with:
