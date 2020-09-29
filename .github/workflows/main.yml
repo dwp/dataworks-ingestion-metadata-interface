@@ -25,8 +25,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@master
-      - name: Zip lambda
+      - name: Generate artifacts directory
         run: mkdir artifacts
+      - name: Generate artifacts common directory
+        working-directory: ./artifacts
+        run: mkdir common
       - name: Set up Python 3.8
         uses: actions/setup-python@v1
         with:
