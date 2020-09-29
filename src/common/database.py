@@ -98,10 +98,10 @@ def execute_query_to_dict(sql, connection, index_column=""):
     logger.info(f"Retrieved column names: \"{column_names}\"")
     data = [dict(zip(column_names, row)) for row in cursor.fetchall()]
 
-    logger.info(f"Retrieved data, committing transaction")
+    logger.info("Retrieved data, committing transaction")
     connection.commit()
 
-    logger.info(f"Transaction committed, formatting dict of results")
+    logger.info("Transaction committed, formatting dict of results")
     result = {}
     if index_column == "":
         index_column = column_names[0]

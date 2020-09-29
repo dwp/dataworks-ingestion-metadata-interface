@@ -47,13 +47,13 @@ def handler(event, context):
     if not args_valid:
         raise ValueError("Arguments passed to handler failed to validate")
 
-    logger.info(f"Getting connection to database")
+    logger.info("Getting connection to database")
     connection = database.get_connection()
 
-    logger.info(f"Building query")
+    logger.info("Building query")
     query = build_query(args)
 
-    logger.info(f"Getting connection to database")
+    logger.info("Getting connection to database")
     result = database.execute_query_to_dict(query, connection)
 
     connection.close()
@@ -69,10 +69,12 @@ def build_query(args):
         if "query-connector-type" in args
         else "AND"
     )
-    
-    query = f"SELECT hbase_id, hbase_timestamp, CAST(write_timestamp AS char), "
-        + f"correlation_id, topic_name, kafka_partition, kafka_offset, "
+
+    query = (
+        "SELECT hbase_id, hbase_timestamp, CAST(write_timestamp AS char), "
+        + "correlation_id, topic_name, kafka_partition, kafka_offset, "
         + f"reconciled_result, CAST(reconciled_timestamp AS char) FROM {common.get_table_name(args)}"
+    )
 
     queryable_options = []
     for queryable_field in queryable_fields:
