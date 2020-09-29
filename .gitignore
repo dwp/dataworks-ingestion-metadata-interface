@@ -1,3 +1,4 @@
 .idea
 __pycache__
 env_vars*
+src/dataworks_ingestion_metadata_interface.egg-info/
