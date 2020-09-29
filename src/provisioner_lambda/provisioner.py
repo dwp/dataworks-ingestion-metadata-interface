@@ -61,13 +61,13 @@ def handler(event, context):
         raise RuntimeError(f"Schema is invalid in table: {common.get_table_name(args)}")
 
 
-def validate_table(database, table_name, connection):
+def validate_table(database_name, table_name, connection):
     global logger
 
     # check table exists
     result = database.execute_query(
         f"SELECT count(*) FROM INFORMATION_SCHEMA.TABLES "
-        f"WHERE TABLE_SCHEMA = '{database}' "
+        f"WHERE TABLE_SCHEMA = '{database_name}' "
         f"AND TABLE_NAME = '{table_name}';",
         connection,
     )
@@ -76,7 +76,7 @@ def validate_table(database, table_name, connection):
 
     # check table schema
     table_structure = database.execute_query_to_dict(
-        f"DESCRIBE {database}.{table_name}", connection, "Field"
+        f"DESCRIBE {database_name}.{table_name}", connection, "Field"
     )
 
     int_field_type = "int(11)"
@@ -160,7 +160,7 @@ def validate_table(database, table_name, connection):
                     )
                     table_valid = False
         else:
-            logger.error(f"{database}.{table_name} is missing column: {column_name}")
+            logger.error(f"{database_name}.{table_name} is missing column: {column_name}")
             table_valid = False
 
         logger.debug(f"{column_name} column has the correct schema settings.")
