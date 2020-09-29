@@ -46,6 +46,8 @@ jobs:
           cp src/query_lambda/*.py artifacts/query_lambda
           cp src/resources/*.sql artifacts/resources
           cp AmazonRootCA1.pem artifacts/common
+          # AmazonRootCA1.pem file is used by the database class, which is in common so is copied to here
+          # But in the project it should be visible and easily available so left in root folder, which as it's not needed locally causes no issues
       - name: Produce zip
         working-directory: ./artifacts
         run: zip -qq -r ../metadata-interface-lambda-${{ needs.get-publish-version.outputs.publish-version }}.zip *
