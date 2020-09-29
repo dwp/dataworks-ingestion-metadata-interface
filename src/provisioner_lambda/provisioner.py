@@ -79,8 +79,9 @@ def validate_table(database, table_name, connection):
         f"DESCRIBE {database}.{table_name}", connection, "Field"
     )
 
+    int_field_type = "int(11)"
     column_structure_required = {
-        "id": {"Field": "id", "Type": "int(11)", "Null": "NO", "Key": "PRI"},
+        "id": {"Field": "id", "Type": int_field_type, "Null": "NO", "Key": "PRI"},
         "hbase_id": {
             "Field": "hbase_id",
             "Type": "varchar(2048)",
@@ -118,14 +119,14 @@ def validate_table(database, table_name, connection):
         },
         "kafka_partition": {
             "Field": "kafka_partition",
-            "Type": "int(11)",
+            "Type": int_field_type,
             "Null": "YES",
             "Key": "",
             "Default": None,
         },
         "kafka_offset": {
             "Field": "kafka_offset",
-            "Type": "int(11)",
+            "Type": int_field_type,
             "Null": "YES",
             "Key": "",
             "Default": None,
