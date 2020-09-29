@@ -27,9 +27,13 @@ def get_mysql_password():
 
 
 def get_connection():
+    global logger
+
     script_dir = os.path.dirname(__file__)
     rel_path = "AmazonRootCA1.pem"
     abs_file_path = os.path.join(script_dir, rel_path)
+
+    logger.info(f"Path to the CR cert is '{abs_file_path}'")
 
     return mysql.connector.connect(
         host=os.environ["RDS_ENDPOINT"],
@@ -48,13 +52,15 @@ def execute_statement(sql, connection):
 
 
 def execute_multiple_statements(sql, connection):
+    global logger
+
     cursor = connection.cursor()
     results = cursor.execute(sql, multi=True)
     for result in results:
         if result.with_rows:
-            logger.debug("Executed: {}".format(result.statement))
+            logger.info("Executed: {}".format(result.statement))
         else:
-            logger.debug(
+            logger.info(
                 "Executed: {}, Rows affected: {}".format(
                     result.statement, result.rowcount
                 )
@@ -81,12 +87,23 @@ def execute_query_to_dict(sql, connection, index_column=""):
     :param index_column: column name that contains value to use to index dict (default to first column), should be a unique column
     :return:
     """
+    global logger
+
+    logger.info(
+        f'Executing the sql statement: "{sql}" using index column "{index_column}"'
+    )
     cursor = connection.cursor()
     cursor.execute(sql)
     desc = cursor.description
     column_names = [col[0] for col in desc]
+
+    logger.info(f'Retrieved column names: "{column_names}"')
     data = [dict(zip(column_names, row)) for row in cursor.fetchall()]
+
+    logger.info("Retrieved data, committing transaction")
     connection.commit()
+
+    logger.info("Transaction committed, formatting dict of results")
     result = {}
     if index_column == "":
         index_column = column_names[0]
