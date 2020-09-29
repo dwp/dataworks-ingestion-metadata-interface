@@ -18,3 +18,19 @@ To enable you to develop this lambda locally and be able to run it, use the Make
 This will download and run a MySQL docker container with the same version of the Aurora serverless RDS database.
 Will also set the environment variables in your shell appropriately for the lambda to run.
 You will be required to gain an AWS STS token before running the script as it calls to Secrets Manager.
+
+## Tests
+
+There are `tox` unit tests in the module. To run them, you will need the module `tox` installed, then go to the root of the module and simply run `tox` to run all the unit tests. You should always ensure they work before making a pull request for your branch.
+
+## Lambda deployment
+
+This code is deployed as two separate lambdas via the `aws-ingestion` repository.
+
+### Provisioner lambda
+
+This lambda sets up the tables on RDS and the code can be found in the `provisioner.py` script. The handler method is how the lambda is called when invoked on AWS.
+
+### Query lambda
+
+This lambda queries the given table on RDS and the code can be found in the `query.py` script. The handler method is how the lambda is called when invoked on AWS.

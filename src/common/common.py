@@ -3,7 +3,7 @@ import socket
 import boto3
 import os
 import sys
-from database import Table
+from common import database
 
 
 def setup_logging(logger_level, environment, application):
@@ -89,9 +89,16 @@ def get_parameters(event, required_keys):
         )
 
     # Validate table name
-    if "table-name" in _args and _args["table-name"].upper() not in Table.__members__:
+    if (
+        "table-name" in _args
+        and _args["table-name"].upper() not in database.Table.__members__
+    ):
         raise ValueError(
             f"ValueError: table-name {_args['table-name']} is invalid or not supported"
         )
 
     return _args
+
+
+def get_table_name(args):
+    return database.Table[args["table-name"]].value

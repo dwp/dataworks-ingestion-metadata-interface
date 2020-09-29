@@ -1,12 +1,16 @@
-from common import *
-from database import *
+from common import common, database
 import json
 import os
 
 
+logger = None
+
+
 def handler(event, context):
+    global logger
+
     try:
-        setup_logging(
+        logger = common.setup_logging(
             os.environ["LOG_LEVEL"] if "LOG_LEVEL" in os.environ else "INFO",
             os.environ["ENVIRONMENT"],
             os.environ["APPLICATION"],
@@ -17,42 +21,51 @@ def handler(event, context):
         )
         raise e
 
-    args = get_parameters(event, ["table-name"])
+    args = common.get_parameters(event, ["table-name"])
 
-    connection = get_connection()
+    connection = database.get_connection()
 
     # create table if not exists
-    execute_statement(
-        open("create_table.sql")
+    database.execute_statement(
+        "DROP TABLE {table_name}".format(table_name=common.get_table_name(args)),
+        connection,
+    )
+
+    script_dir = os.path.dirname(__file__)
+    rel_path = "../resources"
+    abs_file_path = os.path.join(script_dir, rel_path)
+
+    database.execute_statement(
+        open(os.path.join(abs_file_path, "create_table.sql"))
         .read()
-        .format(table_name=Table[args["table-name"]].value),
+        .format(table_name=common.get_table_name(args)),
         connection,
     )
 
     # Create user if not exists and grant access
-    execute_multiple_statements(
-        open("grant_user.sql")
+    database.execute_multiple_statements(
+        open(os.path.join(abs_file_path, "grant_user.sql"))
         .read()
-        .format(table_name=Table[args["table-name"]].value),
+        .format(table_name=common.get_table_name(args)),
         connection,
     )
 
     # validate table and users exist and structure is correct
     table_valid = validate_table(
-        args["rds_database_name"], Table[args["table-name"]].value, connection
+        args["rds_database_name"], common.get_table_name(args), connection
     )
 
     connection.close()
 
     if not table_valid:
-        raise RuntimeError(
-            f'Schema is invalid in table: {Table[args["table-name"]].value}'
-        )
+        raise RuntimeError(f"Schema is invalid in table: {common.get_table_name(args)}")
 
 
 def validate_table(database, table_name, connection):
+    global logger
+
     # check table exists
-    result = execute_query(
+    result = database.execute_query(
         f"SELECT count(*) FROM INFORMATION_SCHEMA.TABLES "
         f"WHERE TABLE_SCHEMA = '{database}' "
         f"AND TABLE_NAME = '{table_name}';",
@@ -62,12 +75,13 @@ def validate_table(database, table_name, connection):
         return False
 
     # check table schema
-    table_structure = execute_query_to_dict(
+    table_structure = database.execute_query_to_dict(
         f"DESCRIBE {database}.{table_name}", connection, "Field"
     )
 
+    int_field_type = "int(11)"
     column_structure_required = {
-        "id": {"Field": "id", "Type": "int(11)", "Null": "NO", "Key": "PRI"},
+        "id": {"Field": "id", "Type": int_field_type, "Null": "NO", "Key": "PRI"},
         "hbase_id": {
             "Field": "hbase_id",
             "Type": "varchar(2048)",
@@ -105,14 +119,14 @@ def validate_table(database, table_name, connection):
         },
         "kafka_partition": {
             "Field": "kafka_partition",
-            "Type": "int(11)",
+            "Type": int_field_type,
             "Null": "YES",
             "Key": "",
             "Default": None,
         },
         "kafka_offset": {
             "Field": "kafka_offset",
-            "Type": "int(11)",
+            "Type": int_field_type,
             "Null": "YES",
             "Key": "",
             "Default": None,
@@ -157,5 +171,11 @@ def validate_table(database, table_name, connection):
 
 
 if __name__ == "__main__":
-    json_content = json.loads(open("event.json", "r").read())
+    script_dir = os.path.dirname(__file__)
+    rel_path = "../resources"
+    abs_file_path = os.path.join(script_dir, rel_path)
+
+    json_content = json.loads(
+        open(os.path.join(abs_file_path, "event.json"), "r").read()
+    )
     handler(json_content, None)
