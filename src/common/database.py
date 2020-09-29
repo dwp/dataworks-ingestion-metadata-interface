@@ -27,12 +27,16 @@ def get_mysql_password():
 
 
 def get_connection():
+    script_dir = os.path.dirname(__file__)
+    rel_path = "AmazonRootCA1.pem"
+    abs_file_path = os.path.join(script_dir, rel_path)
+
     return mysql.connector.connect(
         host=os.environ["RDS_ENDPOINT"],
         user=os.environ["RDS_USERNAME"],
         password=get_mysql_password(),
         database=os.environ["RDS_DATABASE_NAME"],
-        ssl_ca="AmazonRootCA1.pem",
+        ssl_ca=abs_file_path,
         ssl_verify_cert=("SKIP_SSL" not in os.environ),
     )
 

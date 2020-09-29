@@ -49,7 +49,7 @@ def handler(event, context):
 
     connection = database.get_connection()
     query = build_query(args)
-    result = database.execute_query(query, connection)
+    result = database.execute_query_to_dict(query, connection)
 
     connection.close()
 
