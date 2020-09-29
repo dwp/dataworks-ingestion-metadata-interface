@@ -45,7 +45,7 @@ jobs:
           cp src/provisioner_lambda/*.py artifacts/provisioner_lambda
           cp src/query_lambda/*.py artifacts/query_lambda
           cp src/resources/*.sql artifacts/resources
-          cp AmazonRootCA1.pem artifacts
+          cp AmazonRootCA1.pem artifacts/common
       - name: Produce zip
         working-directory: ./artifacts
         run: zip -qq -r ../metadata-interface-lambda-${{ needs.get-publish-version.outputs.publish-version }}.zip *
