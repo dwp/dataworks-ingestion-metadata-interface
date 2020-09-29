@@ -19,9 +19,9 @@ class TestQuery(unittest.TestCase):
         get_table_name_mock.return_value = table_name
         args = {"table-name": table_name}
         expected = (
-            "SELECT hbase_id, hbase_timestamp, CAST(write_timestamp AS char), "
+            "SELECT hbase_id, hbase_timestamp, CAST(write_timestamp AS char) AS write_timestamp, "
             + "correlation_id, topic_name, kafka_partition, kafka_offset, "
-            + f"reconciled_result, CAST(reconciled_timestamp AS char) FROM {table_name}"
+            + f"reconciled_result, CAST(reconciled_timestamp AS char) AS reconciled_timestamp FROM {table_name};"
         )
         actual = query.build_query(args)
 
@@ -38,9 +38,9 @@ class TestQuery(unittest.TestCase):
         get_table_name_mock.return_value = table_name
         args = {"hbase-id-like": "test", "table-name": table_name}
         expected = (
-            "SELECT hbase_id, hbase_timestamp, CAST(write_timestamp AS char), "
+            "SELECT hbase_id, hbase_timestamp, CAST(write_timestamp AS char) AS write_timestamp, "
             + "correlation_id, topic_name, kafka_partition, kafka_offset, "
-            + f"reconciled_result, CAST(reconciled_timestamp AS char) FROM {table_name} WHERE hbase_id LIKE 'test'"
+            + f"reconciled_result, CAST(reconciled_timestamp AS char) AS reconciled_timestamp FROM {table_name} WHERE hbase_id LIKE '%test%';"
         )
         actual = query.build_query(args)
 
@@ -56,14 +56,14 @@ class TestQuery(unittest.TestCase):
         table_mock.return_value = [table_name]
         get_table_name_mock.return_value = table_name
         args = {
-            "hbase-id-like": "test",
+            "hbase-id-equals": "test",
             "correlation-id-equals": "test2",
             "table-name": table_name,
         }
         expected = (
-            "SELECT hbase_id, hbase_timestamp, CAST(write_timestamp AS char), "
+            "SELECT hbase_id, hbase_timestamp, CAST(write_timestamp AS char) AS write_timestamp, "
             + "correlation_id, topic_name, kafka_partition, kafka_offset, "
-            + f"reconciled_result, CAST(reconciled_timestamp AS char) FROM {table_name} WHERE hbase_id LIKE 'test' AND correlation_id = 'test2'"
+            + f"reconciled_result, CAST(reconciled_timestamp AS char) AS reconciled_timestamp FROM {table_name} WHERE hbase_id = 'test' AND correlation_id = 'test2';"
         )
         actual = query.build_query(args)
 
@@ -85,9 +85,9 @@ class TestQuery(unittest.TestCase):
             "table-name": table_name,
         }
         expected = (
-            "SELECT hbase_id, hbase_timestamp, CAST(write_timestamp AS char), "
+            "SELECT hbase_id, hbase_timestamp, CAST(write_timestamp AS char) AS write_timestamp, "
             + "correlation_id, topic_name, kafka_partition, kafka_offset, "
-            + f"reconciled_result, CAST(reconciled_timestamp AS char) FROM {table_name} WHERE hbase_id LIKE 'test' AND correlation_id = 'test2'"
+            + f"reconciled_result, CAST(reconciled_timestamp AS char) AS reconciled_timestamp FROM {table_name} WHERE hbase_id LIKE '%test%' AND correlation_id = 'test2';"
         )
         actual = query.build_query(args)
 
@@ -108,9 +108,9 @@ class TestQuery(unittest.TestCase):
             "table-name": table_name,
         }
         expected = (
-            "SELECT hbase_id, hbase_timestamp, CAST(write_timestamp AS char), "
+            "SELECT hbase_id, hbase_timestamp, CAST(write_timestamp AS char) AS write_timestamp, "
             + "correlation_id, topic_name, kafka_partition, kafka_offset, "
-            + f"reconciled_result, CAST(reconciled_timestamp AS char) FROM {table_name} WHERE hbase_id LIKE 'test' AND kafka_partition = 1"
+            + f"reconciled_result, CAST(reconciled_timestamp AS char) AS reconciled_timestamp FROM {table_name} WHERE hbase_id LIKE '%test%' AND kafka_partition = 1;"
         )
         actual = query.build_query(args)
 
@@ -132,9 +132,9 @@ class TestQuery(unittest.TestCase):
             "table-name": table_name,
         }
         expected = (
-            "SELECT hbase_id, hbase_timestamp, CAST(write_timestamp AS char), "
+            "SELECT hbase_id, hbase_timestamp, CAST(write_timestamp AS char) AS write_timestamp, "
             + "correlation_id, topic_name, kafka_partition, kafka_offset, "
-            + f"reconciled_result, CAST(reconciled_timestamp AS char) FROM {table_name} WHERE hbase_id LIKE 'test' OR kafka_partition = 1"
+            + f"reconciled_result, CAST(reconciled_timestamp AS char) AS reconciled_timestamp FROM {table_name} WHERE hbase_id LIKE '%test%' OR kafka_partition = 1;"
         )
         actual = query.build_query(args)
 
@@ -156,9 +156,9 @@ class TestQuery(unittest.TestCase):
             "table-name": table_name,
         }
         expected = (
-            "SELECT hbase_id, hbase_timestamp, CAST(write_timestamp AS char), "
+            "SELECT hbase_id, hbase_timestamp, CAST(write_timestamp AS char) AS write_timestamp, "
             + "correlation_id, topic_name, kafka_partition, kafka_offset, "
-            + f"reconciled_result, CAST(reconciled_timestamp AS char) FROM {table_name} WHERE hbase_id LIKE 'test' AND correlation_id = 'test2' AND kafka_partition = 1"
+            + f"reconciled_result, CAST(reconciled_timestamp AS char) AS reconciled_timestamp FROM {table_name} WHERE hbase_id LIKE '%test%' AND correlation_id = 'test2' AND kafka_partition = 1;"
         )
         actual = query.build_query(args)
 

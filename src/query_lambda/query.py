@@ -71,9 +71,9 @@ def build_query(args):
     )
 
     query = (
-        "SELECT hbase_id, hbase_timestamp, CAST(write_timestamp AS char), "
+        "SELECT hbase_id, hbase_timestamp, CAST(write_timestamp AS char) AS write_timestamp, "
         + "correlation_id, topic_name, kafka_partition, kafka_offset, "
-        + f"reconciled_result, CAST(reconciled_timestamp AS char) FROM {common.get_table_name(args)}"
+        + f"reconciled_result, CAST(reconciled_timestamp AS char) AS reconciled_timestamp FROM {common.get_table_name(args)}"
     )
 
     queryable_options = []
@@ -83,6 +83,8 @@ def build_query(args):
             value_to_check = args[queryable_field[1]]
             comparison_operator = queryable_field[2]
             field_type = queryable_field[3]
+            if comparison_operator.upper() == "LIKE":
+                value_to_check = f"%{value_to_check}%"
             if field_type in ["string"]:
                 value_to_check = f"'{value_to_check}'"
             queryable_options.append(
@@ -94,6 +96,8 @@ def build_query(args):
         if len(queryable_options) > 1:
             for count in range(1, len(queryable_options)):
                 query += f" {query_connector_type} {queryable_options[count]}"
+
+    query += ";"
 
     logger.info(f'Query built as "{query}"')
     return query
