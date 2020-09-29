@@ -27,9 +27,13 @@ jobs:
         uses: actions/checkout@master
       - name: Generate artifacts directory
         run: mkdir artifacts
-      - name: Generate artifacts common directory
+      - name: Generate artifacts sub directories
         working-directory: ./artifacts
-        run: mkdir common
+        run: |
+          mkdir common
+          mkdir provisioner_lambda
+          mkdir query_lambda
+          mkdir resources
       - name: Set up Python 3.8
         uses: actions/setup-python@v1
         with:
