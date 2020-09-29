@@ -1,4 +1,0 @@
-action: py37, msg: getenv
-cwd: /Users/stevenburton/Code/dataworks-ingestion-metadata-interface/.tox
-cmd: /Users/stevenburton/homebrew/opt/python@2/bin/python2.7 -m virtualenv --no-download --python /Users/stevenburton/homebrew/opt/python/bin/python3.7 py37
-created virtual environment in 7850ms CPython3Posix(dest=/Users/stevenburton/Code/dataworks-ingestion-metadata-interface/.tox/py37, clear=False, global=False) with seeder FromAppData pip=latest setuptools=latest wheel=latest app_data_dir=/Users/stevenburton/Library/Application Support/virtualenv/seed-v1 via=copy
