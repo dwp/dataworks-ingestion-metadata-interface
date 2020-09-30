@@ -3,6 +3,7 @@ import socket
 import boto3
 import os
 import sys
+import json
 from common import database
 
 
@@ -38,7 +39,7 @@ def setup_logging(logger_level, environment, application):
 
 def get_parameters(event, required_keys):
     logger = logging.getLogger(__name__)
-    logger.info(f"Event: {event}")
+    logger.info(f"Event: {json.dumps(event)}")
 
     _args = event
 
@@ -94,11 +95,12 @@ def get_parameters(event, required_keys):
         and _args["table-name"].upper() not in database.Table.__members__
     ):
         raise ValueError(
-            f"ValueError: table-name {_args['table-name']} is invalid or not supported"
+            f"ValueError: table-name {_args['table-name'].upper()} is invalid or not supported"
         )
 
+    logger.info(f"Args: {json.dumps(_args)}")
     return _args
 
 
 def get_table_name(args):
-    return database.Table[args["table-name"]].value
+    return database.Table[args["table-name"].upper()].value
