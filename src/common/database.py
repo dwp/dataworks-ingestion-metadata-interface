@@ -47,7 +47,15 @@ def get_connection():
 
 def execute_statement(sql, connection):
     cursor = connection.cursor()
-    cursor.execute(sql)
+    result = cursor.execute(sql)
+    if result.with_rows:
+        logger.info("Executed: {}".format(result.statement))
+    else:
+        logger.info(
+            "Executed: {}, Rows affected: {}".format(
+                result.statement, result.rowcount
+            )
+        )
     connection.commit()
 
 
