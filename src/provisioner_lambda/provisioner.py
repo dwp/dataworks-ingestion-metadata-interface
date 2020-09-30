@@ -25,16 +25,11 @@ def handler(event, context):
 
     connection = database.get_connection()
 
-    # create table if not exists
-    database.execute_statement(
-        "DROP TABLE {table_name}".format(table_name=common.get_table_name(args)),
-        connection,
-    )
-
     script_dir = os.path.dirname(__file__)
     rel_path = "../resources"
     abs_file_path = os.path.join(script_dir, rel_path)
 
+    logger.info("Creating table if it does not exist")
     database.execute_statement(
         open(os.path.join(abs_file_path, "create_table.sql"))
         .read()
@@ -42,7 +37,7 @@ def handler(event, context):
         connection,
     )
 
-    # Create user if not exists and grant access
+    logger.info("Creating user if not exists and grant access")
     database.execute_multiple_statements(
         open(os.path.join(abs_file_path, "grant_user.sql"))
         .read()
@@ -50,7 +45,7 @@ def handler(event, context):
         connection,
     )
 
-    # validate table and users exist and structure is correct
+    logger.info("Validate table and users exist and the structure is correct")
     table_valid = validate_table(
         args["rds_database_name"], common.get_table_name(args), connection
     )
