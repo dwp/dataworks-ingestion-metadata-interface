@@ -47,7 +47,7 @@ def get_connection():
 
 def execute_statement(sql, connection):
     cursor = connection.cursor()
-    result = cursor.execute(sql)
+    cursor.execute(sql)
     logger.info("Executed: {}".format(sql))
     connection.commit()
 
