@@ -52,9 +52,7 @@ def execute_statement(sql, connection):
         logger.info("Executed: {}".format(result.statement))
     else:
         logger.info(
-            "Executed: {}, Rows affected: {}".format(
-                result.statement, result.rowcount
-            )
+            "Executed: {}, Rows affected: {}".format(result.statement, result.rowcount)
         )
     connection.commit()
 
