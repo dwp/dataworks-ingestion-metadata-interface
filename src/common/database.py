@@ -1,4 +1,6 @@
-from typing import Sequence
+from typing import Any, Sequence, Union
+from mysql.connector.connection import MySQLConnection
+from mysql.connector.connection_cext import CMySQLConnection
 
 import ast
 import logging
@@ -79,7 +81,7 @@ def execute_query(sql, connection):
     return result
 
 
-def call_procedure(connection, procedure_name: str, args: Sequence):
+def call_procedure(connection: Union[MySQLConnection, CMySQLConnection], procedure_name: str, args: Sequence) -> Any:
     cursor = connection.cursor()
     result = cursor.callproc(procedure_name, args)
     connection.commit()
