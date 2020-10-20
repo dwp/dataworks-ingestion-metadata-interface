@@ -5,3 +5,4 @@ src/dataworks_ingestion_metadata_interface.egg-info/
 .tox/
 build/
 dist/
+venv/

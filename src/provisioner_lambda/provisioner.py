@@ -45,6 +45,19 @@ def handler(event, context):
         connection,
     )
 
+    logger.info("Create table alteration stored procedures")
+    database.execute_multiple_statements(
+        open(os.path.join(abs_file_path, "alter_reconciliation_table.sql"))
+        .read()
+        .format(table_name=common.get_table_name(args)),
+        connection,
+    )
+
+    logger.info("Execute table alteration stored procedures")
+    database.call_procedure(
+        connection, "alter_reconciliation_table", [common.get_table_name(args)]
+    )
+
     logger.info("Validate table and users exist and the structure is correct")
     table_valid = validate_table(
         args["rds_database_name"], common.get_table_name(args), connection
@@ -138,6 +151,13 @@ def validate_table(database_name, table_name, connection):
             "Type": "datetime",
             "Null": "YES",
             "Key": "",
+            "Default": None,
+        },
+        "last_checked_timestamp": {
+            "Field": "last_checked_timestamp",
+            "Type": "datetime",
+            "Null": "YES",
+            "Key": "MUL",
             "Default": None,
         },
     }
