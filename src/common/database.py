@@ -1,3 +1,5 @@
+from typing import Sequence
+
 import ast
 import logging
 import os
@@ -73,6 +75,13 @@ def execute_query(sql, connection):
     cursor = connection.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
+    connection.commit()
+    return result
+
+
+def call_procedure(connection, procedure_name: str, args: Sequence):
+    cursor = connection.cursor()
+    result = cursor.callproc(procedure_name, args)
     connection.commit()
     return result
 
