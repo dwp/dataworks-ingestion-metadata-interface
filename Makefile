@@ -38,8 +38,24 @@ env_vars_jetbrains:  ## Generate environment variables for pasting into JetBrain
 	@echo "SKIP_SSL=true" >> env_vars_jetbrains
 	@echo "PYTHONUNBUFFERED=1" >> env_vars_jetbrains
 	@echo "Now copy contents of env_vars_jetbrains into Run Configuration"
-.PHONY: git-hooks
-git-hooks: ## Set up hooks in .githooks
-  @git submodule update --init .githooks ; \
-  git config core.hooksPath .githooks \
 
+.PHONY: sql
+sql:  ## Run MySQL container
+	@{ \
+		echo "INFO: remove $(APP_NAME) container if exists"; \
+		docker rm $(APP_NAME); \
+		docker run --name $(APP_NAME) -d -e MYSQL_ROOT_PASSWORD=passw0rd -e MYSQL_DATABASE=${APP_NAME} -p 3306:3306 mysql:5.7; \
+	}
+
+.PHONY: git-hooks
+git-hooks: ## Set up hooks in .git/hooks
+	@{ \
+		HOOK_DIR=.git/hooks; \
+		for hook in $(shell ls .githooks); do \
+			if [ ! -h $${HOOK_DIR}/$${hook} -a -x $${HOOK_DIR}/$${hook} ]; then \
+				mv $${HOOK_DIR}/$${hook} $${HOOK_DIR}/$${hook}.local; \
+				echo "moved existing $${hook} to $${hook}.local"; \
+			fi; \
+			ln -s -f ../../.githooks/$${hook} $${HOOK_DIR}/$${hook}; \
+		done \
+	}
