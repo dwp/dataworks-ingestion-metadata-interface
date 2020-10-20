@@ -54,7 +54,9 @@ def handler(event, context):
     )
 
     logger.info("Execute table alteration stored procedures")
-    database.call_procedure(connection, "alter_reconciliation_table", [common.get_table_name(args)])
+    database.call_procedure(
+        connection, "alter_reconciliation_table", [common.get_table_name(args)]
+    )
 
     logger.info("Validate table and users exist and the structure is correct")
     table_valid = validate_table(
