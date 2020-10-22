@@ -14,3 +14,15 @@ def get_queryable_options(args, queryable_fields):
                 f"{field_name} {comparison_operator} {value_to_check}"
             )
     return queryable_options
+
+def get_queryable_fields():
+    return [
+        ["hbase_id", "hbase-id-equals", "=", "string"],
+        ["hbase_id", "hbase-id-like", "LIKE", "string"],
+        ["hbase_timestamp", "hbase-timestamp-equals", "=", "int"],
+        ["correlation_id", "correlation-id-equals", "=", "string"],
+        ["topic_name", "topic-name-equals", "=", "string"],
+        ["kafka_partition", "kafka-partition-equals", "=", "int"],
+        ["kafka_offset", "kafka-offset-equals", "=", "int"],
+        ["reconciled_result", "reconciled-result-equals", "=", "int"],
+    ]

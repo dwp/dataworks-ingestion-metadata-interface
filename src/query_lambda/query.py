@@ -6,33 +6,12 @@ import re
 
 logger = None
 
-
-queryable_fields = [
-    ["hbase_id", "hbase-id-equals", "=", "string"],
-    ["hbase_id", "hbase-id-like", "LIKE", "string"],
-    ["hbase_timestamp", "hbase-timestamp-equals", "=", "int"],
-    ["correlation_id", "correlation-id-equals", "=", "string"],
-    ["topic_name", "topic-name-equals", "=", "string"],
-    ["kafka_partition", "kafka-partition-equals", "=", "int"],
-    ["kafka_offset", "kafka-offset-equals", "=", "int"],
-    ["reconciled_result", "reconciled-result-equals", "=", "int"],
-]
-
+queryable_fields = common_query.get_queryable_fields()
 
 def handler(event, context):
     global logger
 
-    try:
-        logger = common.setup_logging(
-            os.environ["LOG_LEVEL"] if "LOG_LEVEL" in os.environ else "INFO",
-            os.environ["ENVIRONMENT"],
-            os.environ["APPLICATION"],
-        )
-    except KeyError as e:
-        print(
-            f"CRITICAL failed to configure logging, environment variable {e.args[0]} missing"
-        )
-        raise e
+    logger = common.initialise_logger()
 
     args = common.get_parameters(event, ["table-name"])
 
