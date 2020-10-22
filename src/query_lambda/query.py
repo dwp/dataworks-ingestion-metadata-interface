@@ -8,6 +8,7 @@ logger = None
 
 queryable_fields = common_query.get_queryable_fields()
 
+
 def handler(event, context):
     global logger
 

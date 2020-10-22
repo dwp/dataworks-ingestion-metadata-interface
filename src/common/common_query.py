@@ -15,6 +15,7 @@ def get_queryable_options(args, queryable_fields):
             )
     return queryable_options
 
+
 def get_queryable_fields():
     return [
         ["hbase_id", "hbase-id-equals", "=", "string"],
