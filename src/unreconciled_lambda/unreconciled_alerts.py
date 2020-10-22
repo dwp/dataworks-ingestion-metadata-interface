@@ -14,6 +14,7 @@ queryable_fields = [
     ["reconciled_result", "reconciled-result-equals", "=", "int"],
 ]
 
+
 def handler(event, context):
     global logger
 
@@ -56,6 +57,7 @@ def handler(event, context):
 
     return result
 
+
 def unreconciled_after_max_age_query(args):
     global logger
 
@@ -71,10 +73,10 @@ def unreconciled_after_max_age_query(args):
     max_timestamp = max_age_scale + " " + max_age_unit
 
     query = (
-            "SELECT * "
-            f"FROM {common.get_table_name(args)} "
-            "WHERE reconciled_result = false "
-            f"AND write_timestamp > {max_timestamp}"
+        "SELECT * "
+        f"FROM {common.get_table_name(args)} "
+        "WHERE reconciled_result = false "
+        f"AND write_timestamp > {max_timestamp}"
     )
 
     queryable_options = common_query.get_queryable_options(args, queryable_fields)
