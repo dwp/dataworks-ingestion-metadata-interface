@@ -45,7 +45,9 @@ def query_unreconciled_after_max_age(connection, args):
     query = unreconciled_after_max_age_query(args)
     logger.info(f'Executing query for unreconciled after max age", "query": "{query}')
     results = database.execute_query_to_dict(query, connection)
-    logger.info(f'Got results for unreconciled records after max age", "results_size": "{len(results)}')
+    logger.info(
+        f'Got results for unreconciled records after max age", "results_size": "{len(results)}'
+    )
     for result in results:
         logger.info(f'Unreconciled record result", "record": "{result}')
 
@@ -86,11 +88,15 @@ def unreconciled_after_max_age_query(args):
 
 def query_reconciled_and_unreconciled_counts(connection, args):
     query = reconciled_and_unreconciled_counts_query(args)
-    logger.info(f'Executing query for reconciled and unreconciled record counts", "query": "{query}')
+    logger.info(
+        f'Executing query for reconciled and unreconciled record counts", "query": "{query}'
+    )
     result = database.execute_query(query, connection)
     unreconciled_count = result[0]
     reconciled_count = result[1]
-    logger.info(f'Got result for reconciled and unreconciled records", "unreconciled_count": "{unreconciled_count[0]}, "reconciled_count": "{reconciled_count[0]}')
+    logger.info(
+        f'Got result for reconciled and unreconciled records", "unreconciled_count": "{unreconciled_count[0]}, "reconciled_count": "{reconciled_count[0]}'
+    )
 
 
 def reconciled_and_unreconciled_counts_query(args):
@@ -121,6 +127,7 @@ def reconciled_and_unreconciled_counts_query(args):
     logger.info(f'reconciled_and_unreconciled_counts_query", "query": "{query}')
 
     return query
+
 
 if __name__ == "__main__":
     script_dir = os.path.dirname(__file__)
