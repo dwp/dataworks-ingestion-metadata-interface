@@ -6,6 +6,7 @@ import sys
 import json
 from common import database
 
+
 def initialise_logger():
     try:
         return setup_logging(
@@ -18,6 +19,7 @@ def initialise_logger():
             f"CRITICAL failed to configure logging, environment variable {e.args[0]} missing"
         )
         raise e
+
 
 def setup_logging(logger_level, environment, application):
     """Set the default logger with json output."""
