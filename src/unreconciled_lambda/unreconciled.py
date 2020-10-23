@@ -1,4 +1,7 @@
-from ..common import common, database, common_query
+import json, sys
+sys.path.append("..")
+
+from common import common, database, common_query
 import os
 
 logger = None
@@ -6,12 +9,14 @@ logger = None
 queryable_fields = common_query.get_queryable_fields()
 
 
-def handler(event, context):
+def handler(event, _):
     global logger
 
     logger = common.initialise_logger()
 
-    args = common.get_parameters(event, ["table-name"])
+    args = common.get_parameters(event, ["table-name",
+                                         "reconciler_maximum_age_scale",
+                                         "reconciler_maximum_age_unit"])
 
     logger.info("Getting connection to database")
     connection = database.get_connection()
@@ -32,8 +37,8 @@ def query_unreconciled_after_max_age(connection, args):
     logger.info(
         f'Got results for unreconciled records after max age", "results_size": "{len(results)}'
     )
-    for result in results:
-        logger.info(f'Unreconciled record result", "record": "{result}')
+    for result in results.items():
+        logger.info(f'Unreconciled record message after max age", "record": "{result}')
 
 
 def unreconciled_after_max_age_query(args):
@@ -45,8 +50,8 @@ def unreconciled_after_max_age_query(args):
         else "AND"
     )
 
-    max_age_scale = os.environ["RECONCILER_MAXIMUM_AGE_SCALE"]
-    max_age_unit = os.environ["RECONCILER_MAXIMUM_AGE_UNIT"]
+    max_age_scale = args['reconciler_maximum_age_scale']
+    max_age_unit = args['reconciler_maximum_age_unit']
 
     query = (
         "SELECT * "
@@ -75,12 +80,12 @@ def query_reconciled_and_unreconciled_counts(connection, args):
     logger.info(
         f'Executing query for reconciled and unreconciled record counts", "query": "{query}'
     )
-    result = database.execute_query_to_dict(query, connection)
-    logger.info(f'Gor result", "result": "{result}')
-    unreconciled_count = result[0]
-    reconciled_count = result[1]
+    result = database.execute_query_to_dict(query, connection, "reconciled_result")
+    logger.info(f'Got result", "result": "{result}')
+    unreconciled_count = result.get(0).get("total")
+    reconciled_count = result.get(1).get("total")
     logger.info(
-        f'Got result for reconciled and unreconciled records", "unreconciled_count": "{unreconciled_count[0]}, "reconciled_count": "{reconciled_count[0]}'
+        f'Got result for reconciled and unreconciled records", "unreconciled_count": "{unreconciled_count}, "reconciled_count": "{reconciled_count}'
     )
 
 
@@ -94,9 +99,9 @@ def reconciled_and_unreconciled_counts_query(args):
     )
 
     query = (
-        "SELECT COUNT(*), reconciled_result "
+        "SELECT COUNT(*) as total, reconciled_result "
         f"FROM {common.get_table_name(args)} "
-        "GROUP BY reconciled_result"
+        "GROUP BY reconciled_result "
     )
 
     queryable_options = common_query.get_queryable_options(args, queryable_fields)
@@ -112,7 +117,6 @@ def reconciled_and_unreconciled_counts_query(args):
     logger.info(f'reconciled_and_unreconciled_counts_query", "query": "{query}')
 
     return query
-
 
 if __name__ == "__main__":
     script_dir = os.path.dirname(__file__)

@@ -82,6 +82,12 @@ def get_parameters(event, required_keys):
     if "RDS_PASSWORD_SECRET_NAME" in os.environ:
         _args["rds_password_secret_name"] = os.environ["RDS_PASSWORD_SECRET_NAME"]
 
+    if "RECONCILER_MAXIMUM_AGE_SCALE" in os.environ:
+        _args["reconciler_maximum_age_scale"] = os.environ["RECONCILER_MAXIMUM_AGE_SCALE"]
+
+    if "RECONCILER_MAXIMUM_AGE_UNIT" in os.environ:
+        _args["reconciler_maximum_age_unit"] = os.environ["RECONCILER_MAXIMUM_AGE_UNIT"]
+
     required_env_vars = [
         "environment",
         "application",
