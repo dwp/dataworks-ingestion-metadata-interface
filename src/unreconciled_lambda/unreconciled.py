@@ -1,4 +1,4 @@
-from common import common, database, common_query
+from ..common import common, database, common_query
 import os
 
 logger = None
@@ -11,13 +11,16 @@ def handler(event, context):
 
     logger = common.initialise_logger()
 
+    args = common.get_parameters(event, ["table-name"])
+
     logger.info("Getting connection to database")
     connection = database.get_connection()
 
     logger.info("Querying for unreconciled records after max age")
-    query_unreconciled_after_max_age(connection, e.args)
+    query_unreconciled_after_max_age(connection, args)
 
-    logger.info("Getting connection to database")
+    logger.info("Querying for reconciled and unreconciled counts")
+    query_reconciled_and_unreconciled_counts(connection, args)
 
     connection.close()
 
@@ -72,7 +75,8 @@ def query_reconciled_and_unreconciled_counts(connection, args):
     logger.info(
         f'Executing query for reconciled and unreconciled record counts", "query": "{query}'
     )
-    result = database.execute_query(query, connection)
+    result = database.execute_query_to_dict(query, connection)
+    logger.info(f'Gor result", "result": "{result}')
     unreconciled_count = result[0]
     reconciled_count = result[1]
     logger.info(
@@ -91,7 +95,7 @@ def reconciled_and_unreconciled_counts_query(args):
 
     query = (
         "SELECT COUNT(*), reconciled_result "
-        "FROM {common.get_table_name(args)} "
+        f"FROM {common.get_table_name(args)} "
         "GROUP BY reconciled_result"
     )
 
