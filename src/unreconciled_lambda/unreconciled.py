@@ -1,4 +1,5 @@
 import json, sys
+
 sys.path.append("..")
 
 from common import common, database, common_query
@@ -14,9 +15,10 @@ def handler(event, _):
 
     logger = common.initialise_logger()
 
-    args = common.get_parameters(event, ["table-name",
-                                         "reconciler_maximum_age_scale",
-                                         "reconciler_maximum_age_unit"])
+    args = common.get_parameters(
+        event,
+        ["table-name", "reconciler_maximum_age_scale", "reconciler_maximum_age_unit"],
+    )
 
     logger.info("Getting connection to database")
     connection = database.get_connection()
@@ -54,8 +56,8 @@ def unreconciled_after_max_age_query(args):
         else "AND"
     )
 
-    max_age_scale = args['reconciler_maximum_age_scale']
-    max_age_unit = args['reconciler_maximum_age_unit']
+    max_age_scale = args["reconciler_maximum_age_scale"]
+    max_age_unit = args["reconciler_maximum_age_unit"]
 
     query = (
         "SELECT * "
@@ -125,6 +127,7 @@ def reconciled_and_unreconciled_counts_query(args):
     logger.info(f'reconciled_and_unreconciled_counts_query", "query": "{query}')
 
     return query
+
 
 if __name__ == "__main__":
     script_dir = os.path.dirname(__file__)
