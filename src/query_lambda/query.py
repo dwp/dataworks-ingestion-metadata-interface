@@ -1,4 +1,4 @@
-from common import common, database
+from common import common, database, common_query
 import json
 import os
 import re
@@ -6,33 +6,13 @@ import re
 
 logger = None
 
-
-queryable_fields = [
-    ["hbase_id", "hbase-id-equals", "=", "string"],
-    ["hbase_id", "hbase-id-like", "LIKE", "string"],
-    ["hbase_timestamp", "hbase-timestamp-equals", "=", "int"],
-    ["correlation_id", "correlation-id-equals", "=", "string"],
-    ["topic_name", "topic-name-equals", "=", "string"],
-    ["kafka_partition", "kafka-partition-equals", "=", "int"],
-    ["kafka_offset", "kafka-offset-equals", "=", "int"],
-    ["reconciled_result", "reconciled-result-equals", "=", "int"],
-]
+queryable_fields = common_query.get_queryable_fields()
 
 
 def handler(event, context):
     global logger
 
-    try:
-        logger = common.setup_logging(
-            os.environ["LOG_LEVEL"] if "LOG_LEVEL" in os.environ else "INFO",
-            os.environ["ENVIRONMENT"],
-            os.environ["APPLICATION"],
-        )
-    except KeyError as e:
-        print(
-            f"CRITICAL failed to configure logging, environment variable {e.args[0]} missing"
-        )
-        raise e
+    logger = common.initialise_logger()
 
     args = common.get_parameters(event, ["table-name"])
 
@@ -76,20 +56,7 @@ def build_query(args):
         + f"reconciled_result, CAST(reconciled_timestamp AS char) AS reconciled_timestamp FROM {common.get_table_name(args)}"
     )
 
-    queryable_options = []
-    for queryable_field in queryable_fields:
-        if queryable_field[1] in args:
-            field_name = queryable_field[0]
-            value_to_check = args[queryable_field[1]]
-            comparison_operator = queryable_field[2]
-            field_type = queryable_field[3]
-            if comparison_operator.upper() == "LIKE":
-                value_to_check = f"%{value_to_check}%"
-            if field_type in ["string"]:
-                value_to_check = f"'{value_to_check}'"
-            queryable_options.append(
-                f"{field_name} {comparison_operator} {value_to_check}"
-            )
+    queryable_options = common_query.get_queryable_options(queryable_fields, args)
 
     if len(queryable_options) > 0:
         query += f" WHERE {queryable_options[0]}"

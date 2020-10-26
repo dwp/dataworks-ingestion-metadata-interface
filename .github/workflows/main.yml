@@ -33,6 +33,7 @@ jobs:
           mkdir common
           mkdir provisioner_lambda
           mkdir query_lambda
+          mkdir unreconciled_lambda
           mkdir resources
       - name: Set up Python 3.8
         uses: actions/setup-python@v1
@@ -44,6 +45,7 @@ jobs:
           cp src/common/*.py artifacts/common
           cp src/provisioner_lambda/*.py artifacts/provisioner_lambda
           cp src/query_lambda/*.py artifacts/query_lambda
+          cp src/unreconciled_lambda/*.py artifacts/unreconciled_lambda
           cp src/resources/*.sql artifacts/resources
           cp AmazonRootCA1.pem artifacts/common
           # AmazonRootCA1.pem file is used by the database class, which is in common so is copied to here

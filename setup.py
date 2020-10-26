@@ -11,7 +11,11 @@ setuptools.setup(
     long_description="Lambdas that provision and query the metadata table",
     long_description_content_type="text/markdown",
     entry_points={
-        "console_scripts": ["query=query:main", "provisioner=provisioner:main"]
+        "console_scripts": [
+            "query=query:main",
+            "provisioner=provisioner:main",
+            "unreconciled=unreconciled:main",
+        ]
     },
     package_dir={"": "src"},
     packages=setuptools.find_packages("src"),

@@ -9,17 +9,7 @@ logger = None
 def handler(event, context):
     global logger
 
-    try:
-        logger = common.setup_logging(
-            os.environ["LOG_LEVEL"] if "LOG_LEVEL" in os.environ else "INFO",
-            os.environ["ENVIRONMENT"],
-            os.environ["APPLICATION"],
-        )
-    except KeyError as e:
-        print(
-            f"CRITICAL failed to configure logging, environment variable {e.args[0]} missing"
-        )
-        raise e
+    logger = common.initialise_logger()
 
     args = common.get_parameters(event, ["table-name"])
 

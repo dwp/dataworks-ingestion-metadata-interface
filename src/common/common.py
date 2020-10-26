@@ -7,6 +7,20 @@ import json
 from common import database
 
 
+def initialise_logger():
+    try:
+        return setup_logging(
+            os.environ["LOG_LEVEL"] if "LOG_LEVEL" in os.environ else "INFO",
+            os.environ["ENVIRONMENT"],
+            os.environ["APPLICATION"],
+        )
+    except KeyError as e:
+        print(
+            f"CRITICAL failed to configure logging, environment variable {e.args[0]} missing"
+        )
+        raise e
+
+
 def setup_logging(logger_level, environment, application):
     """Set the default logger with json output."""
     the_logger = logging.getLogger()
@@ -67,6 +81,14 @@ def get_parameters(event, required_keys):
 
     if "RDS_PASSWORD_SECRET_NAME" in os.environ:
         _args["rds_password_secret_name"] = os.environ["RDS_PASSWORD_SECRET_NAME"]
+
+    if "RECONCILER_MAXIMUM_AGE_SCALE" in os.environ:
+        _args["reconciler_maximum_age_scale"] = os.environ[
+            "RECONCILER_MAXIMUM_AGE_SCALE"
+        ]
+
+    if "RECONCILER_MAXIMUM_AGE_UNIT" in os.environ:
+        _args["reconciler_maximum_age_unit"] = os.environ["RECONCILER_MAXIMUM_AGE_UNIT"]
 
     required_env_vars = [
         "environment",
