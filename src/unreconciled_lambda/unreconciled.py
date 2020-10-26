@@ -34,11 +34,15 @@ def query_unreconciled_after_max_age(connection, args):
     query = unreconciled_after_max_age_query(args)
     logger.info(f'Executing query for unreconciled after max age", "query": "{query}')
     results = database.execute_query_to_dict(query, connection)
-    logger.info(
-        f'Got results for unreconciled records after max age", "results_size": "{len(results)}'
-    )
-    for result in results.items():
-        logger.info(f'Unreconciled record message after max age", "record": "{result}')
+    
+    if results is not None:
+        logger.info(
+            f'Got results for unreconciled records after max age", "results_size": "{len(results)}'
+        )
+        for result in results.items():
+            logger.info(f'Unreconciled record message after max age", "record": "{result}')
+    else:
+        logger.info('Results returned with None value')
 
 
 def unreconciled_after_max_age_query(args):
@@ -81,12 +85,16 @@ def query_reconciled_and_unreconciled_counts(connection, args):
         f'Executing query for reconciled and unreconciled record counts", "query": "{query}'
     )
     result = database.execute_query_to_dict(query, connection, "reconciled_result")
-    logger.info(f'Got result", "result": "{result}')
-    unreconciled_count = result.get(0).get("total")
-    reconciled_count = result.get(1).get("total")
-    logger.info(
-        f'Got result for reconciled and unreconciled records", "unreconciled_count": "{unreconciled_count}, "reconciled_count": "{reconciled_count}'
-    )
+
+    if result is not None:
+        logger.info(f'Got result", "result": "{result}')
+        unreconciled_count = result.get(0).get("total")
+        reconciled_count = result.get(1).get("total")
+        logger.info(
+            f'Got result for reconciled and unreconciled records", "unreconciled_count": "{unreconciled_count}, "reconciled_count": "{reconciled_count}'
+        )
+    else:
+        logger.info('Result returned with None value')
 
 
 def reconciled_and_unreconciled_counts_query(args):
