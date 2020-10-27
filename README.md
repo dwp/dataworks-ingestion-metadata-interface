@@ -34,3 +34,11 @@ This lambda sets up the tables on RDS and the code can be found in the `provisio
 ### Query lambda
 
 This lambda queries the given table on RDS and the code can be found in the `query.py` script. The handler method is how the lambda is called when invoked on AWS.
+
+### Unreconciled lambda
+
+This lambda has two queries for the Metadata Store to allow for logging of important results. The two queries used are:
+- Unreconciled and Reconciled counts
+- Unreconciled after Max Age
+
+The code can be found in the `unreconciled.py` script. The handler method is how the lambda is called when invoked on AWS.
