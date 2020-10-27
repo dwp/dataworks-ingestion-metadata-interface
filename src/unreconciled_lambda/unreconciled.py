@@ -44,7 +44,7 @@ def query_unreconciled_after_max_age(connection, args):
         )
         for result in results.items():
             logger.info(
-                f'Unreconciled record message after max age", "record": "{result}'
+                f'Unreconciled record message after max age", "record": "{result}, "table_name": "{common.get_table_name(args)}'
             )
     else:
         logger.info("Results returned with None value")
@@ -97,7 +97,7 @@ def query_reconciled_and_unreconciled_counts(connection, args):
         reconciled_count = result.get(1).get("total")
         logger.info(
             f'Got result for reconciled and unreconciled records", "unreconciled_count": "{unreconciled_count}, '
-            f'"reconciled_count": "{reconciled_count}'
+            f'"reconciled_count": "{reconciled_count}, "table_name": "{common.get_table_name(args)}'
         )
     else:
         logger.info("Result returned with None value")
