@@ -10,29 +10,15 @@ from unittest.mock import MagicMock, call
 
 class TestDatabase(unittest.TestCase):
     @mock.patch("query_lambda.query.logger")
-    def test_query_generates_correctly_with_no_optional_parameters(
-        self, logger_mock
-    ):
+    def test_query_generates_correctly_with_no_optional_parameters(self, logger_mock):
         expected = {
-            "test_row1_column2" : {
-                "t": "test_row1_column1",
-                "t": "test_row1_column2"
-            },
-            "test_row2_column2" : {
-                "t": "test_row2_column1",
-                "t": "test_row2_column2"
-            },
-            "test_row3_column2" : {
-                "t": "test_row3_column1",
-                "t": "test_row3_column2"
-            }
+            "test_row1_column2": {"t": "test_row1_column1", "t": "test_row1_column2"},
+            "test_row2_column2": {"t": "test_row2_column1", "t": "test_row2_column2"},
+            "test_row3_column2": {"t": "test_row3_column1", "t": "test_row3_column2"},
         }
 
         cursor_mock = MagicMock()
-        cursor_mock.description = [
-            ("test_column_name1"),
-            ("test_column_name2")
-        ]
+        cursor_mock.description = [("test_column_name1"), ("test_column_name2")]
         cursor_mock.fetchall.return_value = (
             ("test_row1_column1", "test_row1_column2"),
             ("test_row2_column1", "test_row2_column2"),
