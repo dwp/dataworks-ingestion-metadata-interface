@@ -1,9 +1,10 @@
-import json, sys
+import json
+import sys
+import os
 
 sys.path.append("..")
 
-from common import common, database, common_query
-import os
+from common import common, database, common_query  # noqa: E402
 
 logger = None
 
@@ -95,7 +96,8 @@ def query_reconciled_and_unreconciled_counts(connection, args):
         unreconciled_count = result.get(0).get("total")
         reconciled_count = result.get(1).get("total")
         logger.info(
-            f'Got result for reconciled and unreconciled records", "unreconciled_count": "{unreconciled_count}, "reconciled_count": "{reconciled_count}'
+            f'Got result for reconciled and unreconciled records", "unreconciled_count": "{unreconciled_count}, '
+            f'"reconciled_count": "{reconciled_count}'
         )
     else:
         logger.info("Result returned with None value")
