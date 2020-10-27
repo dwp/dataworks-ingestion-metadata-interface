@@ -57,7 +57,7 @@ def build_query(args):
         + f"reconciled_result, CAST(reconciled_timestamp AS char) AS reconciled_timestamp FROM {common.get_table_name(args)}"
     )
 
-    queryable_options = common_query.get_queryable_options(queryable_fields, args)
+    queryable_options = common_query.get_queryable_options(args, queryable_fields)
 
     if len(queryable_options) > 0:
         query += f" WHERE {queryable_options[0]}"
