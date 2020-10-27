@@ -35,6 +35,7 @@ def handler(event, context):
 
     logger.info("Getting connection to database")
     result = database.execute_query_to_dict(query, connection)
+    logger.info(f"Query result {result}")
 
     connection.close()
 
