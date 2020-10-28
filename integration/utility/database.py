@@ -6,7 +6,7 @@ import logging
 
 class Database:
     def __init__(self):
-        self.connection = mysql.connector.connect(host="localhost", user="root", password="password",
+        self.connection = mysql.connector.connect(host="metadatastore", user="root", password="password",
                                                   database="metadatastore")
         self.resources_directory = "src/resources"
         self.create_table_script = f"{self.resources_directory}/create_table.sql"
