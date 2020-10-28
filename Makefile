@@ -59,3 +59,15 @@ git-hooks: ## Set up hooks in .git/hooks
 			ln -s -f ../../.githooks/$${hook} $${HOOK_DIR}/$${hook}; \
 		done \
 	}
+
+services:
+	docker-compose up -d metadatastore
+	@{ \
+		while ! docker logs metadatastore 2>&1 | grep "^Version" | grep 3306; do \
+			sleep 2; \
+			echo Waiting for metadatastore.; \
+		done; \
+	}
+
+integration-tests: services
+	docker-compose up --build integration-tests
