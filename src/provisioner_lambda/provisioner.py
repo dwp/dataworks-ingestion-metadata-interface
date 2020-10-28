@@ -170,7 +170,7 @@ def validate_table(database_name, table_name, connection):
             )
             table_valid = False
 
-        logger.debug(f"{column_name} column has the correct schema settings.")
+        logger.info(f"{column_name} column has the correct schema settings.")
 
     if table_valid:
         logger.info(f"Table {table_name} schema is valid")

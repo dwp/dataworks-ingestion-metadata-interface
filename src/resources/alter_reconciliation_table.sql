@@ -8,16 +8,31 @@ BEGIN
     RETURN result != 0;
 END;
 
+DROP FUNCTION IF EXISTS index_exists;
+CREATE FUNCTION index_exists(table_name_param VARCHAR(256), index_name_param VARCHAR(256)) RETURNS BOOLEAN
+BEGIN
+    DECLARE result INT;
+    SELECT COUNT(*)
+    FROM INFORMATION_SCHEMA.STATISTICS
+    WHERE table_name = table_name_param and index_name = index_name_param INTO result;
+    RETURN result != 0;
+END;
+
 DROP PROCEDURE IF EXISTS add_index;
 CREATE PROCEDURE add_index(IN table_name_param VARCHAR(256), IN column_name_param VARCHAR(256))
 BEGIN
     DECLARE column_exists BOOLEAN;
+    DECLARE index_exists BOOLEAN;
+
     SET column_exists = column_exists(table_name_param, column_name_param);
     IF column_exists THEN
-        SET @add_index_ddl = concat('CREATE INDEX ', column_name_param, ' on ', table_name_param, ' (', column_name_param, ')');
-        PREPARE add_index_ddl from @add_index_ddl;
-        EXECUTE add_index_ddl;
-        DEALLOCATE PREPARE add_index_ddl;
+        SET index_exists = index_exists(table_name_param, column_name_param);
+        IF !index_exists THEN
+            SET @add_index_ddl = concat('CREATE INDEX ', column_name_param, ' on ', table_name_param, ' (', column_name_param, ')');
+            PREPARE add_index_ddl from @add_index_ddl;
+            EXECUTE add_index_ddl;
+            DEALLOCATE PREPARE add_index_ddl;
+        END IF;
     END IF;
 END;
 
