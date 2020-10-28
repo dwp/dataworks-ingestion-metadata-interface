@@ -14,12 +14,12 @@ queryable_fields = common_query.get_queryable_fields()
 def handler(event, _):
     global logger
 
-    logger = common.initialise_logger()
-
     args = common.get_parameters(
         event,
         ["table-name", "reconciler_maximum_age_scale", "reconciler_maximum_age_unit"],
     )
+
+    logger = common.initialise_logger(args)
 
     logger.info("Getting connection to database")
     connection = database.get_connection()
@@ -44,7 +44,7 @@ def query_unreconciled_after_max_age(connection, args):
         )
         for result in results.items():
             logger.info(
-                f'Unreconciled record message after max age", "record": "{result}, "table_name": "{common.get_table_name(args)}'
+                f'Unreconciled record message after max age", "record": "{result}'
             )
     else:
         logger.info("Results returned with None value")
@@ -91,16 +91,16 @@ def query_reconciled_and_unreconciled_counts(connection, args):
     )
     result = database.execute_query_to_dict(query, connection, "reconciled_result")
 
-    if result is not None:
-        logger.info(f'Got result", "result": "{result}')
+    if result is not None and len(result) > 0:
+        logger.info(f'Got result", "result": "{len(result) == 0}')
         unreconciled_count = result.get(0).get("total")
         reconciled_count = result.get(1).get("total")
         logger.info(
             f'Got result for reconciled and unreconciled records", "unreconciled_count": "{unreconciled_count}, '
-            f'"reconciled_count": "{reconciled_count}, "table_name": "{common.get_table_name(args)}'
+            f'"reconciled_count": "{reconciled_count}'
         )
     else:
-        logger.info("Result returned with None value")
+        logger.info('No results returned for unreconciled and reconciled counts')
 
 
 def reconciled_and_unreconciled_counts_query(args):

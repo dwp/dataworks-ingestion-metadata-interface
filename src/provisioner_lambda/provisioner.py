@@ -9,9 +9,9 @@ logger = None
 def handler(event, context):
     global logger
 
-    logger = common.initialise_logger()
-
     args = common.get_parameters(event, ["table-name"])
+
+    logger = common.initialise_logger(args)
 
     connection = database.get_connection()
 

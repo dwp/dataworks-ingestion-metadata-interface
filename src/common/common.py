@@ -7,12 +7,13 @@ import json
 from common import database
 
 
-def initialise_logger():
+def initialise_logger(args):
     try:
         return setup_logging(
             os.environ["LOG_LEVEL"] if "LOG_LEVEL" in os.environ else "INFO",
             os.environ["ENVIRONMENT"],
             os.environ["APPLICATION"],
+            args["table-name"]
         )
     except KeyError as e:
         print(
@@ -21,7 +22,7 @@ def initialise_logger():
         raise e
 
 
-def setup_logging(logger_level, environment, application):
+def setup_logging(logger_level, environment, application, table_name):
     """Set the default logger with json output."""
     the_logger = logging.getLogger()
     for old_handler in the_logger.handlers:
@@ -35,7 +36,7 @@ def setup_logging(logger_level, environment, application):
         '{ "timestamp": "%(asctime)s", "log_level": "%(levelname)s", "message": "%(message)s", '
         f'"environment": "{environment}","application": "{application}", '
         f'"module": "%(module)s", "process":"%(process)s", '
-        f'"thread": "[%(thread)s]", "hostname": "{hostname}" }}'
+        f'"thread": "[%(thread)s]", "hostname": "{hostname}", "table_name": "{table_name}" }}'
     )
 
     new_handler.setFormatter(logging.Formatter(json_format))

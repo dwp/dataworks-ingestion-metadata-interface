@@ -12,9 +12,9 @@ queryable_fields = common_query.get_queryable_fields()
 def handler(event, context):
     global logger
 
-    logger = common.initialise_logger()
-
     args = common.get_parameters(event, ["table-name"])
+
+    logger = common.initialise_logger(args)
 
     # Validate args
     args_valid = True
