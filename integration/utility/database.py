@@ -1,7 +1,6 @@
 import mysql.connector
 import mysql.connector.pooling
 import re
-import logging
 
 
 class Database:
