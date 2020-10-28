@@ -13,7 +13,7 @@ def initialise_logger(args):
             os.environ["LOG_LEVEL"] if "LOG_LEVEL" in os.environ else "INFO",
             os.environ["ENVIRONMENT"],
             os.environ["APPLICATION"],
-            args["table-name"]
+            args["table-name"],
         )
     except KeyError as e:
         print(

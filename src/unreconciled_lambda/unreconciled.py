@@ -100,7 +100,7 @@ def query_reconciled_and_unreconciled_counts(connection, args):
             f'"reconciled_count": "{reconciled_count}'
         )
     else:
-        logger.info('No results returned for unreconciled and reconciled counts')
+        logger.info("No results returned for unreconciled and reconciled counts")
 
 
 def reconciled_and_unreconciled_counts_query(args):
