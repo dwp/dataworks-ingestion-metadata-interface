@@ -1,4 +1,4 @@
-from behave import *
+from behave import given, when, then
 
 from utility.database import Database
 
@@ -41,4 +41,4 @@ def step_impl(context, table_name, index_name):
 @then("the {table_name} table will have {partition_count} partitions")
 def step_impl(context, table_name, partition_count):
     actual = database_utility.partition_count(table_name)
-    assert actual is int(partition_count)
+    assert actual == int(partition_count)
