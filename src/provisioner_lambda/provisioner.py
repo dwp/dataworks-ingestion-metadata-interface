@@ -37,15 +37,17 @@ def handler(event, context):
 
     logger.info("Create table alteration stored procedures")
     database.execute_multiple_statements(
-        open(os.path.join(abs_file_path, "alter_reconciliation_table.sql"))
-        .read()
-        .format(table_name=common.get_table_name(args)),
+        open(os.path.join(abs_file_path, "alter_table.sql"))
+        .read(),
         connection,
     )
 
     logger.info("Execute table alteration stored procedures")
+
+    partition_count = args["partition-count"] if args["partition-count"] else 1
+
     database.call_procedure(
-        connection, "alter_reconciliation_table", [common.get_table_name(args)]
+        connection, "alter_reconciliation_table", [common.get_table_name(args), partition_count]
     )
 
     logger.info("Validate table and users exist and the structure is correct")

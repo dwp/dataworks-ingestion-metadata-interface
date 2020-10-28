@@ -9,14 +9,14 @@ def main():
                                          password="password",
                                          database="metadatastore")
     try:
-        script = "../resources/alter_reconciliation_table.sql"
+        script = "../resources/alter_table.sql"
         contents = open(script).read()
         print(contents)
         cursor = connection.cursor()
         for result in cursor.execute(contents, multi=True):
             print(result)
 
-        for result in cursor.callproc("alter_reconciliation_table", ["ucfs"]):
+        for result in cursor.callproc("alter_reconciliation_table", ["ucfs", 5]):
             print(f"Result {result}")
 
     except mysql.connector.Error as e:
