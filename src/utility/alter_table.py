@@ -4,10 +4,9 @@ import mysql.connector.pooling
 
 # Runs the alter reconciliation stored procedure for local dev/testing.
 def main():
-    connection = mysql.connector.connect(host="localhost",
-                                         user="root",
-                                         password="password",
-                                         database="metadatastore")
+    connection = mysql.connector.connect(
+        host="localhost", user="root", password="password", database="metadatastore"
+    )
     try:
         script = "../resources/alter_table.sql"
         contents = open(script).read()
