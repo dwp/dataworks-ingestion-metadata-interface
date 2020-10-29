@@ -2,7 +2,6 @@ from common import common, database
 import json
 import os
 
-
 logger = None
 
 
@@ -22,16 +21,16 @@ def handler(event, context):
     logger.info("Creating table if it does not exist")
     database.execute_statement(
         open(os.path.join(abs_file_path, "create_table.sql"))
-        .read()
-        .format(table_name=common.get_table_name(args)),
+            .read()
+            .format(table_name=common.get_table_name(args)),
         connection,
     )
 
     logger.info("Creating user if not exists and grant access")
     database.execute_multiple_statements(
         open(os.path.join(abs_file_path, "grant_user.sql"))
-        .read()
-        .format(table_name=common.get_table_name(args)),
+            .read()
+            .format(table_name=common.get_table_name(args)),
         connection,
     )
 
@@ -43,7 +42,7 @@ def handler(event, context):
 
     logger.info("Execute table alteration stored procedures")
 
-    partition_count = args["partition-count"] if args["partition-count"] else 1
+    partition_count = args["partition-count"] if "partition-count" in args else 1
 
     database.call_procedure(
         connection,
