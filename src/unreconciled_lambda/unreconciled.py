@@ -22,7 +22,7 @@ def handler(event, _):
     logger = common.initialise_logger(args)
 
     logger.info("Getting connection to database")
-    connection = database.get_connection()
+    connection = database.get_connection(args)
 
     logger.info("Querying for unreconciled records after max age")
     query_unreconciled_after_max_age(connection, args)

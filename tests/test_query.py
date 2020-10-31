@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 
-import json
-import pytest
 import unittest
 from unittest import mock
+
 from query_lambda import query
 
 

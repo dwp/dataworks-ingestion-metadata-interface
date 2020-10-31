@@ -28,7 +28,7 @@ def handler(event, context):
         raise ValueError("Arguments passed to handler failed to validate")
 
     logger.info("Getting connection to database")
-    connection = database.get_connection()
+    connection = database.get_connection(args)
 
     logger.info("Building query")
     query = build_query(args)

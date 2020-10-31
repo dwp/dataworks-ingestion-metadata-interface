@@ -6,3 +6,5 @@ src/dataworks_ingestion_metadata_interface.egg-info/
 build/
 dist/
 venv/
+artifacts/
+metadata-interface-lambda.zip
