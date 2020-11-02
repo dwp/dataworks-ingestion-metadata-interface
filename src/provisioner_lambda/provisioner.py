@@ -2,7 +2,6 @@ from common import common, database
 import json
 import os
 
-
 logger = None
 
 
@@ -43,7 +42,7 @@ def handler(event, context):
 
     logger.info("Execute table alteration stored procedures")
 
-    partition_count = args["partition-count"] if args["partition-count"] else 1
+    partition_count = args["partition-count"] if "partition-count" in args else 1
 
     database.call_procedure(
         connection,
