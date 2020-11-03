@@ -97,9 +97,8 @@ def query_reconciled_and_unreconciled_counts(connection, args):
 
     if result is not None and len(result) > 0:
         logger.info(f'Got result", "result": "{len(result) == 0}')
-        logger.info(f"RESULT: {result}")
-        unreconciled_count = result.get(0).get("total")
-        reconciled_count = result.get(0).get("reconciled_result")
+        unreconciled_count =  get_total_for_index(result, 0)
+        reconciled_count =  get_total_for_index(result, 1)
         logger.info(
             f'Got result for reconciled and unreconciled records", "unreconciled_count": "{unreconciled_count}", '
             f'"reconciled_count": "{reconciled_count}'
