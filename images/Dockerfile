@@ -39,6 +39,10 @@ RUN mkdir $HOME_DIR && \
         useradd $USER && \
         chown -R $USER.$USER $INSTALL_DIR $HOME_DIR
 
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+RUN unzip awscliv2.zip
+RUN ./aws/install
+
 USER $USER
 
 ENV PYTHONPATH ./integration

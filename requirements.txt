@@ -2,4 +2,3 @@ behave==1.2.6
 boto3==1.16.9
 flake8==3.8.4
 mysql-connector-python==8.0.22
-awscli
