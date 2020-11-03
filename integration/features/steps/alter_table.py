@@ -7,7 +7,9 @@ database_utility = Database()
 lambda_utility = LambdaUtility()
 
 
-@given("the {table_name} table is created with {partition_count} partitions and {row_count} rows")
+@given(
+    "the {table_name} table is created with {partition_count} partitions and {row_count} rows"
+)
 def step_impl(context, table_name, partition_count, row_count):
     database_utility.drop_table(table_name)
     database_utility.create_table(table_name, int(partition_count))
