@@ -91,6 +91,10 @@ def query_reconciled_and_unreconciled_counts(connection, args):
     )
     result = database.execute_query_to_dict(query, connection, "reconciled_result")
 
+    logger.info(
+        f'Result for reconciled and unreconciled record counts", "result": "{result}'
+    )
+
     if result is not None and len(result) > 0:
         logger.info(f'Got result", "result": "{len(result) == 0}')
         logger.info(f"RESULT: {result}")
@@ -132,6 +136,16 @@ def reconciled_and_unreconciled_counts_query(args):
     logger.info(f'reconciled_and_unreconciled_counts_query", "query": "{query}')
 
     return query
+
+
+def get_total_for_index(result, index):
+    try:
+        return result.get(index).get("total")
+    except:
+        logger.info(
+            f'Result has an empty row, returning zero", "result": "{result}", "index": "{index}'
+        )
+        return 0
 
 
 if __name__ == "__main__":
