@@ -37,12 +37,22 @@ def get_connection(args):
     logger.info(f"Path to the CR cert is '{abs_file_path}'")
 
     return mysql.connector.connect(
-        host=args["rds_endpoint"] if "rds_endpoint" in args else os.environ["RDS_ENDPOINT"],
-        user=args["rds_username"] if "rds_username" in args else os.environ["RDS_USERNAME"],
-        password=args["rds_password"] if "rds_password" in args else get_mysql_password(),
-        database=args["rds_database_name"] if "rds_database_name" in args else os.environ["RDS_DATABASE_NAME"],
+        host=args["rds_endpoint"]
+        if "rds_endpoint" in args
+        else os.environ["RDS_ENDPOINT"],
+        user=args["rds_username"]
+        if "rds_username" in args
+        else os.environ["RDS_USERNAME"],
+        password=args["rds_password"]
+        if "rds_password" in args
+        else get_mysql_password(),
+        database=args["rds_database_name"]
+        if "rds_database_name" in args
+        else os.environ["RDS_DATABASE_NAME"],
         ssl_ca=abs_file_path,
-        ssl_verify_cert=not args["skip_ssl"] if "skip_ssl" in args else ("SKIP_SSL" not in os.environ),
+        ssl_verify_cert=not args["skip_ssl"]
+        if "skip_ssl" in args
+        else ("SKIP_SSL" not in os.environ),
     )
 
 
