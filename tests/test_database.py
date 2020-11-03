@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 
-import json
-import pytest
 import unittest
 from unittest import mock
+from unittest.mock import MagicMock
+
 from common import database
-from unittest.mock import MagicMock, call
 
 
 class TestDatabase(unittest.TestCase):

@@ -31,6 +31,21 @@ class Database:
             finally:
                 cursor.close()
 
+    def drop_table(self, table_name: str):
+        cursor = self.__cursor()
+        try:
+            cursor.execute(f"DROP TABLE IF EXISTS {table_name}")
+        finally:
+            cursor.close()
+
+    def truncate_table(self, table_name: str):
+        cursor = self.__cursor()
+        try:
+            cursor.execute(f"TRUNCATE TABLE {table_name}")
+            self.connection.commit()
+        finally:
+            cursor.close()
+
     def populate_table(self, table_name: str, row_count: int):
         cursor = self.__cursor()
         try:

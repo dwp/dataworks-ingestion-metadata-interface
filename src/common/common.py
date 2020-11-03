@@ -11,8 +11,8 @@ def initialise_logger(args):
     try:
         return setup_logging(
             os.environ["LOG_LEVEL"] if "LOG_LEVEL" in os.environ else "INFO",
-            os.environ["ENVIRONMENT"],
-            os.environ["APPLICATION"],
+            args["environment"] if "environment" in args else os.environ["ENVIRONMENT"],
+            args["application"] if "application" in args else os.environ["APPLICATION"],
             args["table-name"],
         )
     except KeyError as e:

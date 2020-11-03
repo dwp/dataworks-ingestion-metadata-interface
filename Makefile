@@ -1,4 +1,5 @@
 SHELL:=bash
+LOCALSTACK_READY=^Ready\.$
 
 APP_NAME=metadatastore
 
@@ -60,8 +61,10 @@ git-hooks: ## Set up hooks in .git/hooks
 		done \
 	}
 
-services:
+up-metadatastore:
 	docker-compose up -d metadatastore
+
+service-metadatastore: up-metadatastore
 	@{ \
 		while ! docker logs metadatastore 2>&1 | grep "^Version" | grep 3306; do \
 			sleep 2; \
@@ -69,5 +72,68 @@ services:
 		done; \
 	}
 
+up-localstack:
+	docker-compose up -d localstack
+
+service-localstack: up-localstack
+	@{ \
+		while ! docker logs localstack 2> /dev/null | grep -q $(LOCALSTACK_READY); do \
+			echo Waiting for localstack.; \
+			sleep 2; \
+			done; \
+        }
+
+services: up-metadatastore up-localstack service-metadatastore service-localstack
+
+clean:
+	rm -rf artifacts build src/dataworks_ingestion_metadata_interface.egg-info/
+	rm -f metadata-interface-lambda.zip
+
+.PHONY: build
+build:
+	@{ \
+		pip install -r requirements.txt -t artifacts; \
+		mkdir -p artifacts/common artifacts/provisioner_lambda artifacts/query_lambda artifacts/unreconciled_lambda artifacts/resources; \
+		cp src/common/*.py artifacts/common; \
+		cp src/provisioner_lambda/*.py artifacts/provisioner_lambda; \
+		cp src/query_lambda/*.py artifacts/query_lambda; \
+		cp src/unreconciled_lambda/*.py artifacts/unreconciled_lambda; \
+		cp src/resources/*.sql artifacts/resources; \
+		cp AmazonRootCA1.pem artifacts/common; \
+		cd artifacts; \
+		zip -qq -r ../metadata-interface-lambda.zip *; \
+	}
+
+create:
+	@{ \
+	awslocal lambda create-function \
+		--function-name ingestion-metadata-provisioner \
+		--role whatever \
+		--timeout 900 \
+		--runtime python3.8 \
+		--zip-file fileb://./metadata-interface-lambda.zip \
+		--handler provisioner_lambda.provisioner.handler; \
+	}
+
+update:
+	@{ \
+	awslocal lambda update-function-code \
+		--function-name ingestion-metadata-provisioner \
+		--publish \
+		--zip-file fileb://./metadata-interface-lambda.zip; \
+	}
+
+invoke:
+	@{ \
+		awslocal lambda invoke \
+			--function-name ingestion-metadata-provisioner \
+			--payload '{ "rds_username": "root", "rds_password": "password", "rds_database_name": "metadatastore",  "rds_endpoint": "metadatastore", "table-name": "ucfs", "partition-count": 8, "environment": "local", "application": "ingestion-metadata-provisioner", "rds_password_secret_name": "phony", "skip_ssl": true }' \
+			response.json; \
+	}
+
 integration-tests: services
 	docker-compose up --build integration-tests
+
+
+mysql-client:
+	docker exec -it metadatastore mysql --user=root --password=password metadatastore

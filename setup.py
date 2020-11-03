@@ -19,7 +19,6 @@ setuptools.setup(
     },
     package_dir={"": "src"},
     packages=setuptools.find_packages("src"),
-    install_requires=["argparse", "boto3"],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

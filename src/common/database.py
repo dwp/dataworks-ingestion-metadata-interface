@@ -1,11 +1,8 @@
-from typing import Any, Sequence, Union
-from mysql.connector.connection import MySQLConnection
-from mysql.connector.connection_cext import CMySQLConnection
-
 import ast
 import logging
 import os
 from enum import Enum
+from typing import Any
 
 import boto3
 import mysql.connector
@@ -30,7 +27,7 @@ def get_mysql_password():
     return secret_dict["password"]
 
 
-def get_connection():
+def get_connection(args):
     global logger
 
     script_dir = os.path.dirname(__file__)
@@ -40,12 +37,22 @@ def get_connection():
     logger.info(f"Path to the CR cert is '{abs_file_path}'")
 
     return mysql.connector.connect(
-        host=os.environ["RDS_ENDPOINT"],
-        user=os.environ["RDS_USERNAME"],
-        password=get_mysql_password(),
-        database=os.environ["RDS_DATABASE_NAME"],
+        host=args["rds_endpoint"]
+        if "rds_endpoint" in args
+        else os.environ["RDS_ENDPOINT"],
+        user=args["rds_username"]
+        if "rds_username" in args
+        else os.environ["RDS_USERNAME"],
+        password=args["rds_password"]
+        if "rds_password" in args
+        else get_mysql_password(),
+        database=args["rds_database_name"]
+        if "rds_database_name" in args
+        else os.environ["RDS_DATABASE_NAME"],
         ssl_ca=abs_file_path,
-        ssl_verify_cert=("SKIP_SSL" not in os.environ),
+        ssl_verify_cert=not args["skip_ssl"]
+        if "skip_ssl" in args
+        else ("SKIP_SSL" not in os.environ),
     )
 
 
@@ -82,9 +89,9 @@ def execute_query(sql, connection):
 
 
 def call_procedure(
-    connection: Union[MySQLConnection, CMySQLConnection],
-    procedure_name: str,
-    args: Sequence,
+    connection,
+    procedure_name,
+    args,
 ) -> Any:
     cursor = connection.cursor()
     result = cursor.callproc(procedure_name, args)

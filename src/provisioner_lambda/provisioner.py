@@ -12,7 +12,7 @@ def handler(event, context):
 
     logger = common.initialise_logger(args)
 
-    connection = database.get_connection()
+    connection = database.get_connection(args)
 
     script_dir = os.path.dirname(__file__)
     rel_path = "../resources"
