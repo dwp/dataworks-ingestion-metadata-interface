@@ -74,9 +74,6 @@ def validate_table(database_name, table_name, connection):
     if result == 0:
         return False
 
-    table_exists = database.execute_query_to_dict("SHOW TABLES", connection)
-
-    print(f"TABLE_EXISTS: {table_exists}")
     # check table schema
     table_structure = database.execute_query_to_dict(
         f"DESCRIBE {database_name}.{table_name}", connection, "Field"
