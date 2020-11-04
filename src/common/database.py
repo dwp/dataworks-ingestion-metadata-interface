@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 class Table(Enum):
     UCFS = "ucfs"
     EQUALITIES = "equalities"
+    AUDIT = "audit"
 
 
 def get_mysql_password():
