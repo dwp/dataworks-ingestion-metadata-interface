@@ -2,8 +2,8 @@ name: Perform Python Format
 
 on:
   pull_request:
-#    paths-ignore:
-#      - '.github/workflows/**'
+    paths-ignore:
+      - '.github/workflows/**'
 
 jobs:
   build:
