@@ -1,3 +1,5 @@
+# DO NOT USE THIS REPO - MIGRATED TO GITLAB
+
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=dwp_dataworks-ingestion-metadata-interface&metric=alert_status)](https://sonarcloud.io/dashboard?id=dwp_dataworks-ingestion-metadata-interface)
 [![Known Vulnerabilities](https://snyk.io/test/github/dwp/dataworks-ingestion-metadata-interface/badge.svg?targetFile=requirements.txt)](https://snyk.io/test/github/dwp/dataworks-ingestion-metadata-interface?targetFile=requirements.txt)
 # Dataworks Ingestion Metadata Interface
